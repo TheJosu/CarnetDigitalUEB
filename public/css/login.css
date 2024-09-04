@@ -1,0 +1,215 @@
+@import url('https://rsms.me/inter/inter-ui.css');
+::selection {
+  background: #2D2F36;
+}
+::-webkit-selection {
+  background: #2D2F36;
+}
+::-moz-selection {
+  background: #2D2F36;
+}
+body {
+  background: #ffffff;
+  font-family: 'Roboto Condensed', sans-serif;
+  margin: 10PX;
+}
+.page {
+    background: #ffffff;
+    display: flex;
+    height: calc(100% - 100px);
+    position: absolute;
+    top: 30PX;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-top: 100px;
+    box-sizing: border-box;
+    flex-direction: row;
+  }
+@media (max-width: 767px) {
+  .page {
+    height: auto;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+}
+.container {
+  display: flex;
+  height: 320px;
+  margin: 0 auto;
+  width: 640px;
+}
+@media (max-width: 767px) {
+  .container {
+    flex-direction: column;
+    height: 630px;
+    width: 320px;
+  }
+}
+.left {
+  background: #ffffff;
+  height: calc(100% - 40px);
+  top: 20px;
+  width: 55%;
+  display: flex; /* Habilita Flexbox */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  
+  overflow: hidden; /* Evita que el contenido se salga */
+}
+@media (max-width: 767px) {
+  .left {
+    height: 150px;
+    left: 0px;
+    right: 5px;
+    width: 340px;
+    max-height: 270px;
+    align-items: center;
+  }
+}
+.login {
+    font-weight: 900;
+    margin: 0; /* Resetea el margen para centrar completamente */
+  }
+.eula {
+  color: #999;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 40px;
+}
+.right {
+  background: #0b283f;
+  box-shadow: 0px 0px 40px 16px rgba(0,0,0,0.22);
+  color: #F1F1F2;
+  position: relative;
+  width: 50%;
+}
+@media (max-width: 767px) {
+  .right {
+    flex-shrink: 0;
+    height: 100%;
+    width: 100%;
+    max-height: 350px;
+  }
+}
+svg {
+  position: absolute;
+  width: 320px;
+}
+path {
+  fill: none;
+  stroke: url(#linearGradient);;
+  stroke-width: 4;
+  stroke-dasharray: 240 1386;
+}
+.form {
+  margin: 40px;
+  position: absolute;
+}
+label {
+  color:  #c2c2c5;
+  display: block;
+  
+  height: 16px;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+input {
+  background: transparent;
+  border: 0;
+  color: #f2f2f2;
+  font-size: 20px;
+  height: 30px;
+  line-height: 30px;
+  outline: none !important;
+  width: 100%;
+}
+input::-moz-focus-inner { 
+  border: 0; 
+}
+#submit {
+  color: #707075;
+  margin-top: 40px;
+  transition: color 300ms;
+}
+#submit:focus {
+  color: #f2f2f2;
+}
+#submit:active {
+  color: #d0d0d2;
+}
+/*logo UEB */
+.header-logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #102A41;
+}
+.header-logo img {
+    max-width: 200px;
+    height: auto;
+    margin-right: 20px;
+}
+
+/* Efecto 3D general */
+.text-3d {
+  font-family: 'Arial', sans-serif;
+  
+  font-size: 2.5em; /* Reduce el tamaño para que se ajuste mejor */
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0;
+  position: relative;
+  word-wrap: break-word; /* Permite que el texto se ajuste en caso de desbordamiento */
+  overflow: hidden; /* Evita que el contenido se salga del contenedor */
+  max-width: 100%; /* Asegura que el ancho se ajuste al contenedor */
+}
+
+/* Sombra 3D */
+.text-3d span {
+  display: inline-block;
+  
+}
+
+/* Estilo para "SISTEMA DE" */
+.text-blue {
+  color: #0b283f;
+}
+
+/* Estilo para "CARNETIZACIÓN DIGITAL" */
+.text-red {
+  color: #e80a0a;
+  font-weight: bold;
+}
+
+/*BUTON*/
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+form button {
+  background-color: #e80a0a;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-top: 50px; /* Añadido para dar espacio entre el ícono y el botón */
+  margin-left: 25%;
+  cursor: pointer;
+  transition: transform .3s;
+  font-size: 16px;
+  text-transform: uppercase;
+  
+}
+
+form button:hover {
+  transform: scale(1.05);
+  background-color: #c70909;
+}
+
+form button:active {
+  transform: scale(1);
+}

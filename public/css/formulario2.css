@@ -1,0 +1,133 @@
+body {
+    
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+header {
+    background-color: #0b283f;
+    color: #ffffff;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    width: 150px;
+}
+
+.nav-menu {
+    display: flex;
+    margin-top: 20px;
+}
+
+.nav-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-menu ul li {
+    margin: 0 15px;
+}
+
+.nav-menu ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px;
+    background-color: #e80a0a;
+    border-radius: 5px;
+}
+
+.nav-menu ul li a:hover {
+    background-color: #0b283f;
+}
+
+/* Responsive Styles */
+@media (max-width: 550px) {
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        margin: 0 20px;
+    }
+
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .nav-menu ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0;
+        margin: 5px;
+    }
+
+    .nav-menu ul li {
+        margin: 20px;
+        width: calc(50% - auto); /* Ajusta el tamaño para dos columnas */
+        
+    }
+
+    .nav-menu ul li a {
+        padding: 15px;
+        font-size: 14px;
+        text-align: center;
+        width: 100%;
+        align-items: center;
+        margin: 5px;
+    }
+}
+
+.main {
+    padding: 20px;
+}
+
+.form-container {
+    display: none;
+    background-color: #0b283f;
+    padding: 20px;
+    color: #ffffff;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.form-container.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    box-sizing: border-box;
+}
+
+button[type="submit"] {
+    background-color: #e80a0a;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #ffffff;
+    color: #0b283f;
+    border: 2px solid #e80a0a;
+}

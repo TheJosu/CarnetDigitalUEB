@@ -1,0 +1,127 @@
+/* opciones.css */
+
+/* General */
+body {
+    font-family: 'Roboto Condensed', sans-serif;
+    background-color: #f4f4f4;
+    color: #091a38;
+    margin: 10px;
+    padding: 0;
+}
+
+/* Header Logo */
+.header-logo {
+    display: flex; /* Usar flexbox para organizar la imagen y el texto en línea */
+    justify-content: space-between;
+    align-items: center; /* Centrar verticalmente */
+    padding: 20px;
+    background-color: #102A41;
+}
+
+.header-logo img {
+    max-width: 200px; /* Tamaño máximo del logo */
+    height: auto;
+    margin-right: 20px; /* Espacio entre la imagen y el texto */
+}
+
+.text-container {
+    color: #ffffff;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.text-container .top-text {
+    font-size: 1.2em; /* Ajusta el tamaño según sea necesario */
+}
+
+.text-container .bottom-text {
+    color: #e80a0a;
+    font-size: 1.5em; /* Ajusta el tamaño según sea necesario */
+}
+
+/* Container */
+.container {
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 600px;
+    background-color: #ffffff;
+    border: 1px solid #091a38;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+.container h2 {
+    text-align: center;
+    color: #102A41;
+    margin-bottom: 20px;
+}
+
+/* Form Buttons */
+form {
+    display: flex;
+    justify-content: space-between; /* Coloca los botones a los lados */
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.icon-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 45%; /* Ajustar el tamaño de cada bloque para que ocupen el 45% del espacio */
+}
+
+form button {
+    background-color: #e80a0a;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-top: 10px; /* Añadido para dar espacio entre el ícono y el botón */
+    cursor: pointer;
+    transition: transform .3s;
+    font-size: 16px;
+    text-transform: uppercase;
+    
+}
+
+form button:hover {
+    transform: scale(1.05);
+    background-color: #c70909;
+}
+
+form button:active {
+    transform: scale(1);
+}
+
+/* Responsive Design */
+@media only screen and (max-width: 600px) {
+    .header-logo {
+        flex-direction: column; /* Cambiar a diseño en columna en pantallas pequeñas */
+        text-align: center;
+    }
+    
+    .header-logo img {
+        
+        margin: 0 0 20px 0; /* Centrar la imagen y agregar espacio debajo */
+    }
+
+    .container {
+        width: 90%;
+        margin-top: 30px;
+    }
+
+    form {
+        flex-direction: column; /* Cambiar a disposición en columna para pantallas pequeñas */
+        align-items: center;
+    }
+
+    .icon-text {
+        width: 100%;
+        margin-bottom: 20px; /* Espacio entre los bloques en diseño vertical */
+    }
+}
