@@ -2,8 +2,10 @@
 // Conectar a la base de datos
 include 'config/database.php';
 
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+// No existe "connect_error" en PDO, así que este chequeo se elimina
+// Verifica si la conexión fue exitosa
+if (!$conn) {
+    die("Conexión fallida: No se pudo establecer la conexión a la base de datos.");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -13,13 +15,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $ci = htmlspecialchars($ci);
 
     // Consultar si la cédula existe
-    $sql = "SELECT * FROM estudiante WHERE id_cedula = ?";
+    $sql = "SELECT * FROM estudiante WHERE id_cedula = :ci";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $ci); // Cambiar el tipo a "i" para integer
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // PDO usa bindParam con un formato diferente, aquí se usa ":ci" en lugar de ?
+    $stmt->bindParam(':ci', $ci, PDO::PARAM_INT);  // Cambiar a entero
 
-    if ($result->num_rows > 0) {
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($result) {
         // Redirigir a la página de opciones
         header("Location: opciones.php?ci=" . urlencode($ci));
         exit();
@@ -29,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $stmt->close();
+    $stmt = null;  // Cerrar el statement
 }
 
-$conn->close();
+$conn = null;  // Cerrar la conexión
 ?>
