@@ -1,20 +1,26 @@
-# Usa una imagen oficial de PHP con Apache
+# Usar una imagen oficial de PHP con Apache
 FROM php:8.1-apache
 
-# Instala dependencias necesarias para PostgreSQL
-RUN apt-get update && apt-get install -y libpq-dev
+# Instalar extensiones necesarias
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd
 
-# Instala extensiones de PHP necesarias
+# Instalar extensiones de PostgreSQL (si lo necesitas)
 RUN docker-php-ext-install pdo pdo_pgsql
 
 # Copia el contenido del proyecto al contenedor
 COPY . /var/www/html/
 
-# Configura el directorio de trabajo
+# Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
-# Exponer el puerto 80 (puerto por defecto de Apache)
+# Dar permisos de escritura si es necesario
+RUN chown -R www-data:www-data /var/www/html
+
+# Exponer el puerto 80 (o el que necesites)
 EXPOSE 80
 
-# Configura Apache para escuchar en el puerto 80
-CMD ["apache2-foreground"]
