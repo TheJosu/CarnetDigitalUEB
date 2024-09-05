@@ -7,7 +7,7 @@ services:
     autoDeploy: true
     envVars:
       - key: MYSQL_HOST
-        value: "dpg-crcip9rv2p9s73cgisig-a"
+        value: "dpg-crcip9rv2p9s73cgisig-a.oregon-postgres.render.com"
       - key: MYSQL_DB
         value: "alumnosueb"
       - key: MYSQL_USER
