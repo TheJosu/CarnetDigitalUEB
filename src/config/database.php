@@ -1,8 +1,8 @@
 <?php
-$host = getenv('PG_HOST');
-$db = getenv('PG_DB');
-$user = getenv('PG_USER');
-$pass = getenv('PG_PASSWORD');
+$host = getenv('MYSQL_HOST');
+$db = getenv('MYSQL_DB');
+$user = getenv('MYSQL_USER');
+$pass = getenv('MYSQL_PASSWORD');
 
 try {
     $conn = new PDO("pgsql:host=$host;dbname=$db", $user, $pass);
