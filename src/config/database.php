@@ -1,8 +1,8 @@
 <?php
-$host = '102.177.161.34';
-$db = 'alumnosueb';
-$user = 'UEB';
-$pass = 'Cu3nta_BdUEB';
+$host = getenv('MYSQL_HOST'); // Ejemplo: "localhost" o IP del servidor
+$db = getenv('MYSQL_DB'); // Ejemplo: "mi_basedatos"
+$user = getenv('MYSQL_USER'); // Ejemplo: "mi_usuario"
+$pass = getenv('MYSQL_PASSWORD'); // Ejemplo: "mi_contraseña"
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
