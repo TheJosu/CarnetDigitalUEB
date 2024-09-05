@@ -7,10 +7,10 @@ services:
     autoDeploy: true
     envVars:
       - key: MYSQL_HOST
-        value: "tuservidor_mysql"
+        value: "dpg-crcip9rv2p9s73cgisig-a"
       - key: MYSQL_DB
         value: "alumnosueb"
       - key: MYSQL_USER
         value: "root"
       - key: MYSQL_PASSWORD
-        value: ""
+        value: "YMoYLuvhnPNHv7ckBBsUQswAlG8an3Fq"
