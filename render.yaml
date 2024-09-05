@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: CarnetDigitalUEB
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: MYSQL_HOST
+        value: "tuservidor_mysql"
+      - key: MYSQL_DB
+        value: "alumnosueb"
+      - key: MYSQL_USER
+        value: "root"
+      - key: MYSQL_PASSWORD
+        value: ""
