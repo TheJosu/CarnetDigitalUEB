@@ -6,11 +6,11 @@ services:
     plan: free
     autoDeploy: true
     envVars:
-      - key: MYSQL_HOST
+      - key: PGSQL_HOST
         value: "dpg-crcip9rv2p9s73cgisig-a.oregon-postgres.render.com"
-      - key: MYSQL_DB
+      - key: PGSQL_DB
         value: "alumnosueb"
-      - key: MYSQL_USER
+      - key: PGSQL_USER
         value: "root"
-      - key: MYSQL_PASSWORD
+      - key: PGSQL_PASSWORD
         value: "YMoYLuvhnPNHv7ckBBsUQswAlG8an3Fq"
