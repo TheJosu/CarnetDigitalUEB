@@ -12,8 +12,9 @@ class PDF extends FPDF {
 $ci = $_GET['ci'];
 include 'config/database.php';
 
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+// No existe "connect_error" en PDO
+if (!$conn) {
+    die("Conexión fallida: No se pudo establecer la conexión a la base de datos.");
 }
 
 $sql = "SELECT e.*, f.nombre_facultad, c.nombre_carrera, cl.nombre_ciclo, p.fecha_inicio, p.fecha_fin 
@@ -22,20 +23,20 @@ $sql = "SELECT e.*, f.nombre_facultad, c.nombre_carrera, cl.nombre_ciclo, p.fech
         JOIN carrera c ON e.id_carrera = c.id_carrera
         JOIN ciclo cl ON e.id_ciclo = cl.id_ciclo
         JOIN periodo p ON e.id_periodo = p.id_periodo
-        WHERE e.id_cedula = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $ci);
-$stmt->execute();
-$result = $stmt->get_result();
+        WHERE e.id_cedula = :ci";  // Cambiamos a ":ci" para PDO
 
-if ($result->num_rows > 0) {
-    $student = $result->fetch_assoc();
-} else {
+$stmt = $conn->prepare($sql);
+$stmt->bindParam(':ci', $ci, PDO::PARAM_STR);  // Cambiar a PDO
+
+$stmt->execute();
+$student = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($student === false) {
     die("Estudiante no encontrado.");
 }
 
-$stmt->close();
-$conn->close();
+$stmt = null;  // Cerramos el statement
+$conn = null;  // Cerramos la conexión
 
 $fecha_inicio = DateTime::createFromFormat('Y-m-d', $student['fecha_inicio']);
 $fecha_fin = DateTime::createFromFormat('Y-m-d', $student['fecha_fin']);
@@ -115,8 +116,6 @@ $cedulaX = ($pageWidth - $cedulaWidth) / 2;
 $pdf->SetXY($cedulaX, $pdf->GetY() + 50); // Ajustar Y según necesites
 $pdf->Cell($cedulaWidth, 50, utf8_decode($cedulaTexto), 0, 1, 'C');
 
-
-
 $pdf->SetFont('Times', 'I', 50);
 $pdf->SetTextColor(58, 58, 58); // plomo
 
@@ -135,7 +134,6 @@ $pdf->MultiCell(1200, 50, utf8_decode('Facultad: ') . utf8_decode($student['nomb
 // Reajustar la posición X antes de imprimir "Carrera"
 $pdf->SetX(110); // Restablece la posición X a 90 para la siguiente línea
 $pdf->Cell(0, 50, utf8_decode('Carrera: ') . utf8_decode($student['nombre_carrera']), 0, 1);
-
 
 //DESCARGAR
 $pdfFile = 'carnet_digital.pdf';
@@ -156,4 +154,3 @@ if ($action == 'download') {
     exit();
 }
 ?>
-
