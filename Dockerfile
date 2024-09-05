@@ -2,7 +2,9 @@
 FROM php:8.1-apache
 
 # Instala extensiones de PHP necesarias
-RUN docker-php-ext-install pdo pdo_mysql
+#RUN docker-php-ext-install pdo pdo_mysql
+# Para PostgreSQL, usa:
+ RUN docker-php-ext-install pdo pdo_pgsql
 
 # Copia el contenido del proyecto al contenedor
 COPY . /var/www/html/

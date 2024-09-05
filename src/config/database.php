@@ -1,11 +1,11 @@
 <?php
-$host = getenv('MYSQL_HOST'); // Ejemplo: "localhost" o IP del servidor
-$db = getenv('MYSQL_DB'); // Ejemplo: "mi_basedatos"
-$user = getenv('MYSQL_USER'); // Ejemplo: "mi_usuario"
-$pass = getenv('MYSQL_PASSWORD'); // Ejemplo: "mi_contraseña"
+$host = getenv('POSTGRES_HOST');
+$db = getenv('POSTGRES_DB');
+$user = getenv('POSTGRES_USER');
+$pass = getenv('POSTGRES_PASSWORD');
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
+    $conn = new PDO("pgsql:host=$host;dbname=$db", $user, $pass);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
