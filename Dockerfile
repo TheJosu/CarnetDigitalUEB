@@ -5,10 +5,13 @@ FROM php:8.1-apache
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
 # Copia el contenido del proyecto al contenedor
-COPY . /var/www/html
+COPY . /var/www/html/
 
-# Expone el puerto 10000 para Render
-EXPOSE 10000
+# Configura el directorio de trabajo
+WORKDIR /var/www/html
 
-# Inicia Apache en el puerto 10000
-CMD ["php", "-S", "0.0.0.0:10000", "-t", "/var/www/html"]
+# Exponer el puerto 80 (puerto por defecto de Apache)
+EXPOSE 80
+
+# Configura Apache para escuchar en el puerto 80
+CMD ["apache2-foreground"]
