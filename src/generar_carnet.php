@@ -57,7 +57,7 @@ if (file_exists($fotoPath)) {
 }
 
 // Agregar qr fondo
-$qrData = 'http://localhost:8081/Carnet/src/validacion.php?ci=' . urlencode($ci);
+$qrData = 'https://carnetdigitalueb.onrender.com//src/validacion.php?ci=' . urlencode($ci);
 $qrFile = 'qrcode.png';
 QRcode::png($qrData, $qrFile, QR_ECLEVEL_L, 10);
 
