@@ -55,7 +55,7 @@
                     <select id="id_facultad" name="id_facultad" required>
                         <option value="">Seleccione</option>
                         <?php
-                        $conn = new mysqli("localhost", "root", "", "alumnosueb");
+                        include 'config/database.php';
                         if ($conn->connect_error) {
                             die("Conexión fallida: " . $conn->connect_error);
                         }
@@ -88,7 +88,7 @@
                     <select id="id_carrera" name="id_carrera" required>
                         <option value="">Seleccione</option>
                         <?php
-                        $conn = new mysqli("localhost", "root", "", "alumnosueb");
+                        include 'config/database.php';
                         if ($conn->connect_error) {
                             die("Conexión fallida: " . $conn->connect_error);
                         }
@@ -161,7 +161,7 @@
                     <select id="id_facultad_estudiante" name="id_facultad" required>
                         <option value="">Seleccione</option>
                         <?php
-                        $conn = new mysqli("localhost", "root", "", "AlumnosUEB");
+                        include 'config/database.php';
                         if ($conn->connect_error) {
                             die("Conexión fallida: " . $conn->connect_error);
                         }
@@ -181,7 +181,7 @@
                     <select id="id_carrera_estudiante" name="id_carrera" required>
                         <option value="">Seleccione</option>
                         <?php
-                        $conn = new mysqli("localhost", "root", "", "AlumnosUEB");
+                        include 'config/database.php';
                         if ($conn->connect_error) {
                             die("Conexión fallida: " . $conn->connect_error);
                         }
@@ -202,7 +202,7 @@
                         <option value="">Seleccione</option>
                         <?php
                         // Obtener ciclos de la base de datos
-                        $conn = new mysqli("localhost", "root", "", "AlumnosUEB");
+                        include 'config/database.php';
                         if ($conn->connect_error) {
                             die("Conexión fallida: " . $conn->connect_error);
                         }
@@ -223,7 +223,7 @@
                     <select id="id_periodo_estudiante" name="id_periodo" required>
                         <option value="">Seleccione</option>
                         <?php
-                        $conn = new mysqli("localhost", "root", "", "AlumnosUEB");
+                        include 'config/database.php';
                         if ($conn->connect_error) {
                             die("Conexión fallida: " . $conn->connect_error);
                         }
