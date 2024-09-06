@@ -25,7 +25,7 @@ COPY . /var/www/html/
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
-# Instalar dependencias de Compose
+# Instalar dependencias de Composer
 RUN composer install
 
 # Dar permisos de escritura si es necesario
@@ -33,3 +33,4 @@ RUN chown -R www-data:www-data /var/www/html
 
 # Exponer el puerto 80
 EXPOSE 80
+
