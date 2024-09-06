@@ -1,57 +1,60 @@
 <?php
-$ci = filter_var($_GET['ci'], FILTER_SANITIZE_STRING); // Sanitizar el parámetro GET
+// Sanitizar el parámetro GET usando FILTER_SANITIZE_FULL_SPECIAL_CHARS en lugar de FILTER_SANITIZE_STRING
+$ci = filter_var($_GET['ci'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 include 'config/database.php';
 
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
+// No hay connect_error en PDO, así que no se necesita esta comprobación
+try {
+    // Preparar y ejecutar la consulta
+    $sql = "SELECT e.*, f.nombre_facultad, c.nombre_carrera, cl.nombre_ciclo, p.fecha_inicio, p.fecha_fin 
+            FROM estudiante e
+            JOIN facultad f ON e.id_facultad = f.id_facultad
+            JOIN carrera c ON e.id_carrera = c.id_carrera
+            JOIN ciclo cl ON e.id_ciclo = cl.id_ciclo
+            JOIN periodo p ON e.id_periodo = p.id_periodo
+            WHERE e.id_cedula = :id_cedula";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':id_cedula', $ci, PDO::PARAM_INT);
+    $stmt->execute();
+    $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$sql = "SELECT e.*, f.nombre_facultad, c.nombre_carrera, cl.nombre_ciclo, p.fecha_inicio, p.fecha_fin 
-        FROM estudiante e
-        JOIN facultad f ON e.id_facultad = f.id_facultad
-        JOIN carrera c ON e.id_carrera = c.id_carrera
-        JOIN ciclo cl ON e.id_ciclo = cl.id_ciclo
-        JOIN periodo p ON e.id_periodo = p.id_periodo
-        WHERE e.id_cedula = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $ci);
-$stmt->execute();
-$result = $stmt->get_result();
+    if ($student) {
+        // Función para obtener el nombre del mes en español
+        function getMesEnEspanol($mes) {
+            $meses = array(
+                1 => 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            );
+            return $meses[(int)$mes];
+        }
 
-if ($result->num_rows > 0) {
-    $student = $result->fetch_assoc();
-    
-    // Función para obtener el nombre del mes en español
-    function getMesEnEspanol($mes) {
-        $meses = array(
-            1 => 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-        );
-        return $meses[(int)$mes];
-    }
+        // Formatear el periodo académico en español
+        $fecha_inicio = new DateTime($student['fecha_inicio']);
+        $fecha_fin = new DateTime($student['fecha_fin']);
+        $mes_inicio = getMesEnEspanol($fecha_inicio->format('n')); // 'n' da el mes sin ceros a la izquierda
+        $mes_fin = getMesEnEspanol($fecha_fin->format('n'));
+        $periodo_academico = $mes_inicio . " " . $fecha_inicio->format('Y') . " - " . $mes_fin . " " . $fecha_fin->format('Y');
+        
+        // Obtener el nombre de la fotografía desde la base de datos
+        $fotografia = $student['fotografia'];
 
-    // Formatear el periodo académico en español
-    $fecha_inicio = new DateTime($student['fecha_inicio']);
-    $fecha_fin = new DateTime($student['fecha_fin']);
-    $mes_inicio = getMesEnEspanol($fecha_inicio->format('n')); // 'n' da el mes sin ceros a la izquierda
-    $mes_fin = getMesEnEspanol($fecha_fin->format('n'));
-    $periodo_academico = $mes_inicio . " " . $fecha_inicio->format('Y') . " - " . $mes_fin . " " . $fecha_fin->format('Y');
-    
-    // Obtener el nombre de la fotografía desde la base de datos
-    $fotografia = $student['fotografia'];
-
-    if (!empty($fotografia)) {
-        $fotoPath = 'uploads/' . $fotografia; // Ruta completa a la imagen
+        if (!empty($fotografia)) {
+            $fotoPath = 'uploads/' . $fotografia; // Ruta completa a la imagen
+        } else {
+            // Mostrar una página de error amigable o redirigir
+            echo "Estudiante no encontrado.";
+            exit; // Asegúrate de detener la ejecución en caso de error
+        }
     } else {
-        // Mostrar una página de error amigable o redirigir
         echo "Estudiante no encontrado.";
         exit; // Asegúrate de detener la ejecución en caso de error
     }
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
 }
 
-$stmt->close();
-$conn->close();
+$conn = null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -78,7 +81,7 @@ $conn->close();
             <!-- Foto del estudiante -->
             <div style="flex: 0 0 150px; margin-right: 20px;">
                 <?php if (!empty($fotografia) && file_exists($fotoPath)): ?>
-                    <img src="<?php echo $fotoPath; ?>" alt="Fotografía del Estudiante" style="width: 150px; height: 180px;">
+                    <img src="<?php echo htmlspecialchars($fotoPath); ?>" alt="Fotografía del Estudiante" style="width: 150px; height: 180px;">
                 <?php else: ?>
                     <p>No se encontró la fotografía del estudiante.</p>
                 <?php endif; ?>
@@ -101,4 +104,3 @@ $conn->close();
     </div>
 </body>
 </html>
-
