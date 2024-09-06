@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Ingreso de Datos</title>
-    <link rel="stylesheet" href="../public/css/formulario2.css">
+    <link rel="stylesheet" href="https://carnetdigitalueb.onrender.com/public/css/formulario2.css">
 </head>
 <body>
     <header>
@@ -277,6 +277,6 @@
 
         document.querySelector('.nav-menu a').click(); // Show the first form by default
     </script>                    
-    <script src="../public/js/formulario2.js"></script>
+    <script src="https://carnetdigitalueb.onrender.com/public/js/formulario2.js"></script>
 </body>
 </html>
