@@ -1,9 +1,17 @@
 <?php
-require 'vendor/autoload.php'; // Asegúrate de que Composer esté instalado y este archivo exista
+// Incluir el autoload de Composer
+require 'vendor/autoload.php';
 
-use Google\Client;
-use Google\Service\Drive;
-use Google\Service\Drive\DriveFile;
+// Configuración de Google Client
+use Google\Client as GoogleClient;
+
+// Configurar Google Client
+$client = new GoogleClient();
+$client->setAuthConfig('path/to/credentials.json');
+$client->addScope(Google_Service_Drive::DRIVE_FILE);
+
+// Obtener el token de acceso
+$service = new Google_Service_Drive($client);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo = $_POST['tipo'];

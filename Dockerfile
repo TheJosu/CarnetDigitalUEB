@@ -25,7 +25,7 @@ COPY . /var/www/html/
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
-# Instalar dependencias de Composer
+# Instalar dependencias de Compose
 RUN composer install
 
 # Dar permisos de escritura si es necesario
