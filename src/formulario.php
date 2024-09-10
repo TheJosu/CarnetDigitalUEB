@@ -123,7 +123,7 @@
         </div>
         <div class="form-group">
             <label for="fotografia">Fotografía:</label>
-            <input type="file" name="fotografia" accept="image/*">
+            <input type="file" name="fotografia" accept="image/*" required>
         </div>
         <div class="form-group">
             <label for="nombre_estudiante">Nombre:</label>
@@ -142,7 +142,7 @@
         </div>
         <div class="form-group">
             <label for="correo_institucional">Correo Institucional:</label>
-            <input type="email" id="correo_institucional" name="correo_institucional">
+            <input type="email" id="correo_institucional" name="correo_institucional" required>
         </div>
         <div class="form-group">
             <label for="id_facultad_estudiante">Facultad:</label>

@@ -9,15 +9,12 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libpq-dev \
-    curl \
-    git \
-    unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_pgsql
+    && docker-php-ext-install gd
 
-# Instalar Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Instalar extensiones de PostgreSQL
+RUN apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql
 
 # Copiar el contenido del proyecto al contenedor
 COPY . /var/www/html/
@@ -25,12 +22,8 @@ COPY . /var/www/html/
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
-# Instalar dependencias de Composer
-RUN composer install
-
 # Dar permisos de escritura si es necesario
 RUN chown -R www-data:www-data /var/www/html
 
 # Exponer el puerto 80
 EXPOSE 80
-
