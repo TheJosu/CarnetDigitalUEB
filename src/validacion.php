@@ -98,14 +98,14 @@ $conn = null;
             <!-- Información del estudiante -->
             <div style="flex: 1;">
                 <p><i class="fas fa-user" style="color: #e80a0a;"></i> Nombre: <?php echo htmlspecialchars($result['nombre_estudiante']); ?></p>
-                <p><i class="fas fa-id-card" style="color: #e80a0a;"></i> Cédula: <?php echo htmlspecialchars($result['id_cedula']); ?></p>
+                <p><i class="fas fa-id-card" style="color: #0b283f;"></i> Cédula: <?php echo htmlspecialchars($result['id_cedula']); ?></p>
                 <p><i class="fas fa-user-tie" style="color: #e80a0a;"></i> Rol: Estudiante</p> <!-- Rol siempre será "Estudiante" -->
-                <p><i class="fas fa-phone" style="color: #e80a0a;"></i> Celular: <?php echo htmlspecialchars($result['celular']); ?></p>
+                <p><i class="fas fa-phone" style="color: #0b283f;"></i> Celular: <?php echo htmlspecialchars($result['celular']); ?></p>
                 <p><i class="fas fa-envelope" style="color: #e80a0a;"></i> Correo: <?php echo htmlspecialchars($result['correo_institucional']); ?></p>
                 <p><i class="fas fa-graduation-cap" style="color: #0b283f;"></i> Modalidad: <?php echo htmlspecialchars($result['modalidad']); ?></p>
-                <p><i class="fas fa-university" style="color: #0b283f;"></i> Facultad: <?php echo htmlspecialchars($result['nombre_facultad']); ?></p>
+                <p><i class="fas fa-university" style="color: #e80a0a;"></i> Facultad: <?php echo htmlspecialchars($result['nombre_facultad']); ?></p>
                 <p><i class="fas fa-school" style="color: #0b283f;"></i> Carrera: <?php echo htmlspecialchars($result['nombre_carrera']); ?></p>
-                <p><i class="fas fa-calendar-alt" style="color: #0b283f;"></i> Ciclo: <?php echo htmlspecialchars($result['nombre_ciclo']); ?></p>
+                <p><i class="fas fa-calendar-alt" style="color: #e80a0a;"></i> Ciclo: <?php echo htmlspecialchars($result['nombre_ciclo']); ?></p>
                 <p><i class="fas fa-calendar-week" style="color: #0b283f;"></i> Periodo Académico: <?php echo htmlspecialchars($periodo_academico); ?></p>
             </div>
         </div>
