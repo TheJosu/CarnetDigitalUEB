@@ -9,12 +9,12 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd
 
-# Instalar extensiones de PostgreSQL
-RUN apt-get install -y libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+# Instalar extensiones PDO para MySQL y PostgreSQL
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql
 
 # Copiar el contenido del proyecto al contenedor
 COPY . /var/www/html/
