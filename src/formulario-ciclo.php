@@ -39,7 +39,7 @@
                         $sql = "SELECT id_carrera, nombre_carrera FROM carrera";
                         $stmt = $conn->query($sql);
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            echo "<option value=\"" . htmlspecialchars($row['id_facultad']) . "\">" . htmlspecialchars($row['nombre_facultad']) . "</option>";
+                            echo "<option value=\"" . htmlspecialchars($row['id_carrera']) . "\">" . htmlspecialchars($row['nombre_carrera']) . "</option>";
                         }
                         ?>
                     </select>
