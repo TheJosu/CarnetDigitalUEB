@@ -1,8 +1,11 @@
 <?php
 // Conectar a la base de datos
 include 'config/database.php';
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+try {
+    $conn = new PDO("pgsql:host=$host;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Conexión fallida: " . $e->getMessage());
 }
 
 // Obtener la lista de carreras y ciclos
