@@ -36,17 +36,11 @@
                         <option value="">Seleccione</option>
                         <?php
                         include 'config/database.php';
-                        if ($conn->connect_error) {
-                            die("Conexión fallida: " . $conn->connect_error);
-                        }
                         $sql = "SELECT id_carrera, nombre_carrera FROM carrera";
-                        $result = $conn->query($sql);
-                        if ($result->num_rows > 0) {
-                            while($row = $result->fetch_assoc()) {
-                                echo "<option value=\"" . $row['id_carrera'] . "\">" . $row['nombre_carrera'] . "</option>";
-                            }
+                        $stmt = $conn->query($sql);
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            echo "<option value=\"" . htmlspecialchars($row['id_carrera']) . "\">" . htmlspecialchars($row['nombre_carrera']) . "</option>";
                         }
-                        $conn->close();
                         ?>
                     </select>
                 </div>
@@ -56,17 +50,11 @@
                         <option value="">Seleccione</option>
                         <?php
                         include 'config/database.php';
-                        if ($conn->connect_error) {
-                            die("Conexión fallida: " . $conn->connect_error);
-                        }
                         $sql = "SELECT id_ciclo, nombre_ciclo FROM ciclo";
-                        $result = $conn->query($sql);
-                        if ($result->num_rows > 0) {
-                            while($row = $result->fetch_assoc()) {
-                                echo "<option value=\"" . $row['id_ciclo'] . "\">" . $row['nombre_ciclo'] . "</option>";
-                            }
+                        $stmt = $conn->query($sql);
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            echo "<option value=\"" . htmlspecialchars($row['id_ciclo']) . "\">" . htmlspecialchars($row['nombre_ciclo']) . "</option>";
                         }
-                        $conn->close();
                         ?>
                     </select>
                 </div>
@@ -76,20 +64,14 @@
                         <option value="">Seleccione</option>
                         <?php
                         include 'config/database.php';
-                        if ($conn->connect_error) {
-                            die("Conexión fallida: " . $conn->connect_error);
-                        }
                         $sql = "SELECT id_periodo, fecha_inicio, fecha_fin FROM periodo";
-                        $result = $conn->query($sql);
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                $inicio = new DateTime($row['fecha_inicio']);
-                                $fin = new DateTime($row['fecha_fin']);
-                                $periodo = $inicio->format('F Y') . " - " . $fin->format('F Y');
-                                echo "<option value=\"" . $row['id_periodo'] . "\">" . $periodo . "</option>";
-                            }
+                        $stmt = $conn->query($sql);
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            $inicio = new DateTime($row['fecha_inicio']);
+                            $fin = new DateTime($row['fecha_fin']);
+                            $periodo = $inicio->format('F Y') . " - " . $fin->format('F Y');
+                            echo "<option value=\"" . htmlspecialchars($row['id_periodo']) . "\">" . htmlspecialchars($periodo) . "</option>";
                         }
-                        $conn->close();
                         ?>
                     </select>
                 </div>
