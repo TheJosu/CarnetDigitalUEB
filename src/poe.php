@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <!-- Agregar el logotipo de la UEB -->
     <div class="header-logo">
-        <a href="../src/formulario.php" width="50px;">
+        <a href="../src/principal.php" width="50px;">
             <img src="img/logotipo-ueb2.png" alt="Logotipo UEB">
         </a>
         <div class="text-container">

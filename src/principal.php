@@ -24,14 +24,14 @@
     <!-- Menú de Navegación Mejorado -->
     <nav class="nav-menu">
         <ul>
-            <li><a href="formulario-facultad.php" target='_blank'><i class="fas fa-university"></i> Facultad</a></li>
-            <li><a href="formulario-carrera.php" target='_blank'><i class="fas fa-graduation-cap"></i> Carrera</a></li>
-            <li><a href="formulario-ciclo.php" target='_blank'><i class="fas fa-calendar"></i> Ciclo</a></li>
-            <li><a href="formulario-periodo.php" target='_blank'><i class="fas fa-clock"></i> Periodo</a></li>
-            <li><a href="formulario-estudiante.php" target='_blank'><i class="fas fa-user-graduate"></i> Estudiante</a></li>
-            <li><a href="formulario-masivo.php" target='_blank'><i class="fas fa-upload"></i> Subida Masiva de Datos</a></li>
-            <li><a href="formulario-matricula.php" target='_blank'><i class="fas fa-book"></i> Matricula</a></li>
-            <li><a href="poe.php" target='_blank'><i class="fas fa-edit"></i> Editar Datos de Alumnos</a></li>
+            <li><a href="formulario-facultad.php"><i class="fas fa-university"></i> Facultad</a></li>
+            <li><a href="formulario-carrera.php"><i class="fas fa-graduation-cap"></i> Carrera</a></li>
+            <li><a href="formulario-ciclo.php"><i class="fas fa-calendar"></i> Ciclo</a></li>
+            <li><a href="formulario-periodo.php"><i class="fas fa-clock"></i> Periodo</a></li>
+            <li><a href="formulario-estudiante.php"><i class="fas fa-user-graduate"></i> Estudiante</a></li>
+            <li><a href="formulario-masivo.php"><i class="fas fa-upload"></i> Subida Masiva de Datos</a></li>
+            <li><a href="formulario-matricula.php"><i class="fas fa-book"></i> Matricula</a></li>
+            <li><a href="poe.php"><i class="fas fa-edit"></i> Editar Datos de Alumnos</a></li>
         </ul>
     </nav>
 </body>
