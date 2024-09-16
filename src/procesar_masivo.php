@@ -4,13 +4,12 @@ require 'vendor/autoload.php'; // Incluir PhpOffice autoload
 use PhpOffice\PhpSpreadsheet\IOFactory;
 session_start(); // Iniciar sesión
 
-// Conectar a la base de datos usando PDO
+// Incluir la configuración de la base de datos
 include 'config/database.php';
 
 try {
-    // Crear la conexión usando PDO
-    $conn = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
-    // Configurar PDO para que lance excepciones en caso de error
+    // La conexión ya está establecida en database.php
+    // Configuración de PDO para que lance excepciones en caso de error
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Conexión fallida: " . $e->getMessage());
@@ -159,3 +158,4 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
 // Cerrar la conexión
 $conn = null;
 ?>
+

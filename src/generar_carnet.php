@@ -43,17 +43,16 @@ $stmt->closeCursor();
 $conn = null;
 
 // Crear el PDF
-$pdf = new PDF('P', 'pt', array(1365, 2427)); // Dimensiones en puntos (pt)
+$pdf = new PDF('P', 'pt', array(1365, 2427));
 $pdf->AddPage();
 
 // Agregar FOTO de fondo
-$fotoPath = 'uploads/' . $student['fotografia']; // Asegúrate de que $student['fotografia'] tenga una extensión válida
-
+$fotoPath = 'uploads/' . $student['fotografia'];
 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 $extension = pathinfo($fotoPath, PATHINFO_EXTENSION);
 
 if (in_array($extension, $allowedExtensions) && file_exists($fotoPath)) {
-    $pdf->Image($fotoPath, 440, 750, 600, 650);
+    $pdf->Image($fotoPath, intval(440), intval(750), intval(600), intval(650));
 } else {
     die("La imagen no se pudo cargar correctamente o no es una extensión válida.");
 }
@@ -72,65 +71,58 @@ $logoHeight = imagesy($logo);
 
 $newLogoWidth = $qrWidth / 5;
 $newLogoHeight = $logoHeight * ($newLogoWidth / $logoWidth);
-$logoResized = imagecreatetruecolor($newLogoWidth, $newLogoHeight);
-imagecopyresampled($logoResized, $logo, 0, 0, 0, 0, $newLogoWidth, $newLogoHeight, $logoWidth, $logoHeight);
+$logoResized = imagecreatetruecolor(intval($newLogoWidth), intval($newLogoHeight));
+imagecopyresampled($logoResized, $logo, 0, 0, 0, 0, intval($newLogoWidth), intval($newLogoHeight), $logoWidth, $logoHeight);
 
 $logoX = ($qrWidth - $newLogoWidth) / 2;
 $logoY = ($qrHeight - $newLogoHeight) / 2;
-imagecopymerge($qrImage, $logoResized, $logoX, $logoY, 0, 0, $newLogoWidth, $newLogoHeight, 100);
+imagecopymerge($qrImage, $logoResized, intval($logoX), intval($logoY), 0, 0, intval($newLogoWidth), intval($newLogoHeight), 100);
 
 imagepng($qrImage, $qrFile);
 imagedestroy($qrImage);
 imagedestroy($logo);
 imagedestroy($logoResized);
 
-$pdf->Image($qrFile, 0, 1900, 500, 550);
+$pdf->Image($qrFile, intval(0), intval(1900), intval(500), intval(550));
 
 // Agregar imagen de fondo
 $fondoPath = 'fondo2.png'; // Ruta de la imagen de fondo
 
 if (file_exists($fondoPath)) {
-    $pdf->Image($fondoPath, 0, 0, 1365, 2427); // Ajustar la imagen para que ocupe todo el fondo
+    $pdf->Image($fondoPath, intval(0), intval(0), intval(1365), intval(2427)); // Ajustar la imagen para que ocupe todo el fondo
 }
 
 // Información del estudiante
-// Nombre
 $pdf->SetFont('Times', 'Bu', 90);
 $pdf->SetTextColor(0, 0, 0); // NEGRO
-$pdf->SetXY(90, 1380);
-$pageWidth = $pdf->GetPageWidth();
-$nombreWidth = $pdf->GetStringWidth(utf8_decode($student['nombre_estudiante']));
-$nombreX = ($pageWidth - $nombreWidth) / 2;
-$pdf->SetXY($nombreX, $pdf->GetY() + 50); // Ajustar Y según necesites
-$pdf->Cell($nombreWidth, 50, utf8_decode($student['nombre_estudiante']), 0, 1, 'C');
+$pdf->SetXY(intval($nombreX), intval($pdf->GetY() + 50));
+$pdf->Cell(intval($nombreWidth), 50, utf8_decode($student['nombre_estudiante']), 0, 1, 'C');
 
 // Cédula
 $pdf->SetFont('Times', 'I', 90);
 $cedulaTexto = $student['id_cedula'];
-$cedulaWidth = $pdf->GetStringWidth(utf8_decode($cedulaTexto));
-$cedulaX = ($pageWidth - $cedulaWidth) / 2;
-$pdf->SetXY($cedulaX, $pdf->GetY() + 50); // Ajustar Y según necesites
-$pdf->Cell($cedulaWidth, 50, utf8_decode($cedulaTexto), 0, 1, 'C');
+$pdf->SetXY(intval($cedulaX), intval($pdf->GetY() + 50));
+$pdf->Cell(intval($cedulaWidth), 50, utf8_decode($cedulaTexto), 0, 1, 'C');
 
 // Rol
 $pdf->SetFont('Times', 'I', 50);
 $pdf->SetTextColor(58, 58, 58); // Plomo
-$pdf->SetXY(110, 1600);
+$pdf->SetXY(intval(110), intval(1600));
 $pdf->Cell(0, 50, utf8_decode('Rol: ') . utf8_decode("Estudiante"), 0, 1);
 
 // Modalidad (desde la tabla carrera)
 $pdf->SetFont('Times', 'I', 50);
 $pdf->SetTextColor(58, 58, 58); // Plomo
-$pdf->SetXY(110, 1650);
+$pdf->SetXY(intval(110), intval(1650));
 $pdf->Cell(0, 50, utf8_decode('Modalidad: ') . utf8_decode($student['modalidad']), 0, 1);
 
 // Facultad (con MultiCell para manejar texto extenso)
-$pdf->SetXY(round(110), round(1700));
-$pdf->MultiCell(round(1200), round(50), utf8_decode('Facultad: ') . utf8_decode($student['nombre_facultad']), 0, 'L');
+$pdf->SetXY(intval(110), intval(1700));
+$pdf->MultiCell(intval(1200), intval(50), utf8_decode('Facultad: ') . utf8_decode($student['nombre_facultad']), 0, 'L');
 
 // Carrera (extraída de la tabla `carrera`)
-$pdf->SetX(round(110)); // Restablece la posición X a 110 para la siguiente línea
-$pdf->Cell(round(0), round(50), utf8_decode('Carrera: ') . utf8_decode($student['nombre_carrera']), 0, 1);
+$pdf->SetX(intval(110)); // Restablece la posición X a 110 para la siguiente línea
+$pdf->Cell(intval(0), intval(50), utf8_decode('Carrera: ') . utf8_decode($student['nombre_carrera']), 0, 1);
 
 // Descargar o visualizar el PDF
 $pdfFile = 'carnet_digital.pdf';
