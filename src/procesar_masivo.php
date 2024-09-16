@@ -7,6 +7,10 @@ session_start(); // Iniciar sesión
 // Conectar a la base de datos
 include 'config/database.php';
 
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+
 // Verificar si se ha subido un archivo
 if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
     $fileTmpPath = $_FILES['archivo']['tmp_name'];
@@ -45,6 +49,10 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                 $stmt->execute();
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+                // Inicializar $id_carrera y $id_ciclo a null
+                $id_carrera = null;
+                $id_ciclo = null;
+
                 if ($result) {
                     // Verificar si el estudiante está registrado en la tabla de matrícula
                     $stmt = $conn->prepare('SELECT id_matricula FROM matricula WHERE id_cedula = :id_cedula');
@@ -60,22 +68,28 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                         $stmt = $conn->prepare('SELECT id_carrera FROM carrera WHERE nombre_carrera = :carrera');
                         $stmt->bindValue(':carrera', $carrera, PDO::PARAM_STR);
                         $stmt->execute();
-                        $id_carrera = $stmt->fetch(PDO::FETCH_ASSOC)['id_carrera'] ?? null;
+                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                        $id_carrera = $result['id_carrera'] ?? null;
 
                         // Obtener ID del ciclo
                         $stmt = $conn->prepare('SELECT id_ciclo FROM ciclo WHERE nombre_ciclo = :ciclo');
                         $stmt->bindValue(':ciclo', $ciclo, PDO::PARAM_STR);
                         $stmt->execute();
-                        $id_ciclo = $stmt->fetch(PDO::FETCH_ASSOC)['id_ciclo'] ?? null;
+                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                        $id_ciclo = $result['id_ciclo'] ?? null;
 
-                        // Insertar el nuevo registro en la tabla de matrícula
-                        $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
-                        $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
-                        $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
-                        $stmt->bindValue(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
-                        $stmt->execute();
+                        // Verificar si ambos, $id_carrera y $id_ciclo, son válidos antes de insertar
+                        if ($id_carrera && $id_ciclo) {
+                            $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
+                            $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
+                            $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
+                            $stmt->bindValue(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
+                            $stmt->execute();
 
-                        $new_records_inserted = true;
+                            $new_records_inserted = true;
+                        } else {
+                            echo "Error: No se encontró la carrera o el ciclo para el estudiante con cédula " . $id_cedula;
+                        }
                     }
                 } else {
                     // Insertar el nuevo registro en la tabla de estudiantes
@@ -84,14 +98,32 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                     $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                     $stmt->execute();
 
-                    // Insertar el nuevo registro en la tabla de matrícula
-                    $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
-                    $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
-                    $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
-                    $stmt->bindValue(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
+                    // Obtener ID de la carrera
+                    $stmt = $conn->prepare('SELECT id_carrera FROM carrera WHERE nombre_carrera = :carrera');
+                    $stmt->bindValue(':carrera', $carrera, PDO::PARAM_STR);
                     $stmt->execute();
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $id_carrera = $result['id_carrera'] ?? null;
 
-                    $new_records_inserted = true;
+                    // Obtener ID del ciclo
+                    $stmt = $conn->prepare('SELECT id_ciclo FROM ciclo WHERE nombre_ciclo = :ciclo');
+                    $stmt->bindValue(':ciclo', $ciclo, PDO::PARAM_STR);
+                    $stmt->execute();
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $id_ciclo = $result['id_ciclo'] ?? null;
+
+                    // Verificar si ambos, $id_carrera y $id_ciclo, son válidos antes de insertar
+                    if ($id_carrera && $id_ciclo) {
+                        $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
+                        $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
+                        $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
+                        $stmt->bindValue(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
+                        $stmt->execute();
+
+                        $new_records_inserted = true;
+                    } else {
+                        echo "Error: No se encontró la carrera o el ciclo para el estudiante con cédula " . $id_cedula;
+                    }
                 }
             }
 
@@ -120,5 +152,5 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
     echo "No se ha subido ningún archivo o ha ocurrido un error.";
 }
 
-$conn = null; // Cerrar la conexión
+$conn->close();
 ?>
