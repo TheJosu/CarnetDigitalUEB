@@ -76,38 +76,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $conn = null;  // Cerrar la conexión
 ?>
 
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Editar Alumno</title>
-        <link rel="stylesheet" href="../public/css/edit_estudiante.css">
-    </head>
-    <body>
-        <!-- Agregar el logotipo de la UEB -->
-        <div class="header-logo">
-            <a href="../src/poe.php" width="50px;"><img src="img/logotipo-ueb2.png" alt="Logotipo UEB"></a>
-            <div class="text-container">
-                <div class="top-text">EDITAR ALUMNOS PARA EL</div>
-                <div class="bottom-text">CARNET DIGITAL</div>
-            </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Alumno</title>
+    <link rel="stylesheet" href="../public/css/edit_estudiante.css">
+</head>
+<body>
+    <!-- Agregar el logotipo de la UEB -->
+    <div class="header-logo">
+        <a href="../src/poe.php" width="50px;"><img src="img/logotipo-ueb2.png" alt="Logotipo UEB"></a>
+        <div class="text-container">
+            <div class="top-text">EDITAR ALUMNOS PARA EL</div>
+            <div class="bottom-text">CARNET DIGITAL</div>
         </div>
+    </div>
 
-        <div class="container">
-            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . "?id=" . $id_estudiante; ?>" enctype="multipart/form-data">
-                <label for="id_estudiante">ID de Estudiante:</label>
-                <input type="text" id="id_estudiante" name="id_estudiante" value="<?php echo htmlspecialchars($row["id_cedula"]); ?>" readonly><br><br>
-                <label for="foto">Fotografía:</label>
-                <input type="file" id="foto" name="foto"><br><br>
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($row["nombre_estudiante"]); ?>"><br><br>
-                <label for="telefono">Teléfono:</label>
-                <input type="text" id="telefono" name="telefono" value="<?php echo htmlspecialchars($row["celular"]); ?>"><br><br>
-                <label for="correo">Correo:</label>
-                <input type="email" id="correo" name="correo" value="<?php echo htmlspecialchars($row["correo_institucional"]); ?>"><br><br>
-                <input type="submit" value="Guardar Cambios">
-            </form>
-        </div>
-    </body>
-    </html>
+    <div class="container">
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . "?id=" . $id_estudiante; ?>" enctype="multipart/form-data">
+            <label for="id_estudiante">ID de Estudiante:</label>
+            <input type="text" id="id_estudiante" name="id_estudiante" value="<?php echo htmlspecialchars($row["id_cedula"] ?? ''); ?>" readonly><br><br>
+            <label for="foto">Fotografía:</label>
+            <input type="file" id="foto" name="foto"><br><br>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($row["nombre_estudiante"] ?? ''); ?>"><br><br>
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" name="telefono" value="<?php echo htmlspecialchars($row["celular"] ?? ''); ?>"><br><br>
+            <label for="correo">Correo:</label>
+            <input type="email" id="correo" name="correo" value="<?php echo htmlspecialchars($row["correo_institucional"] ?? ''); ?>"><br><br>
+            <input type="submit" value="Guardar Cambios">
+        </form>
+    </div>
+</body>
+</html>
