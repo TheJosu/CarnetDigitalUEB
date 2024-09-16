@@ -2,8 +2,9 @@
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo = $_POST['tipo'];
 
-    // Conectar a la base de datos
+    // Incluir el archivo de configuración
     include 'config/database.php';
+
     try {
         $conn = new PDO("pgsql:host=$host;dbname=$dbname", $username, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
