@@ -36,17 +36,11 @@
                         <option value="">Seleccione</option>
                         <?php
                         include 'config/database.php';
-                        if ($conn->connect_error) {
-                            die("Conexión fallida: " . $conn->connect_error);
-                        }
                         $sql = "SELECT id_facultad, nombre_facultad FROM facultad";
-                        $result = $conn->query($sql);
-                        if ($result->num_rows > 0) {
-                            while($row = $result->fetch_assoc()) {
-                                echo "<option value=\"" . $row['id_facultad'] . "\">" . $row['nombre_facultad'] . "</option>";
-                            }
+                        $stmt = $conn->query($sql);
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            echo "<option value=\"" . htmlspecialchars($row['id_facultad']) . "\">" . htmlspecialchars($row['nombre_facultad']) . "</option>";
                         }
-                        $conn->close();
                         ?>
                     </select>
                 </div>
