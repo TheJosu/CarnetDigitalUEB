@@ -4,33 +4,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Conectar a la base de datos
     include 'config/database.php';
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
+    try {
+        $conn = new PDO("pgsql:host=$host;dbname=$dbname", $username, $password);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (PDOException $e) {
+        die("Conexión fallida: " . $e->getMessage());
     }
 
     if ($tipo === 'facultad') {
         $nombre_facultad = $_POST['nombre_facultad'];
-        $sql = "INSERT INTO facultad (nombre_facultad) VALUES (?)";
+        $sql = "INSERT INTO facultad (nombre_facultad) VALUES (:nombre_facultad)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $nombre_facultad);
+        $stmt->bindValue(':nombre_facultad', $nombre_facultad, PDO::PARAM_STR);
     } elseif ($tipo === 'carrera') {
         $nombre_carrera = $_POST['nombre_carrera'];
         $id_facultad = $_POST['id_facultad'];
         $modalidad = $_POST['modalidad'];
-        $sql = "INSERT INTO carrera (nombre_carrera, id_facultad, modalidad) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO carrera (nombre_carrera, id_facultad, modalidad) VALUES (:nombre_carrera, :id_facultad, :modalidad)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sis", $nombre_carrera, $id_facultad, $modalidad);
+        $stmt->bindValue(':nombre_carrera', $nombre_carrera, PDO::PARAM_STR);
+        $stmt->bindValue(':id_facultad', $id_facultad, PDO::PARAM_INT);
+        $stmt->bindValue(':modalidad', $modalidad, PDO::PARAM_STR);
     } elseif ($tipo === 'ciclo') {
         $nombre_ciclo = $_POST['nombre_ciclo'];
         $id_carrera = $_POST['id_carrera'];
-        $sql = "INSERT INTO ciclo (nombre_ciclo, id_carrera) VALUES (?, ?)";
+        $sql = "INSERT INTO ciclo (nombre_ciclo, id_carrera) VALUES (:nombre_ciclo, :id_carrera)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("si", $nombre_ciclo, $id_carrera);
+        $stmt->bindValue(':nombre_ciclo', $nombre_ciclo, PDO::PARAM_STR);
+        $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
     } elseif ($tipo === 'periodo') {
         $fecha_inicio = $_POST['fecha_inicio'];
         $fecha_fin = $_POST['fecha_fin'];
 
-        // Asegúrate de que las fechas se reciban en el formato adecuado
         $fecha_inicio = DateTime::createFromFormat('Y-m-d', $fecha_inicio);
         $fecha_fin = DateTime::createFromFormat('Y-m-d', $fecha_fin);
 
@@ -38,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fecha_inicio_formato = $fecha_inicio->format('Y-m-d');
             $fecha_fin_formato = $fecha_fin->format('Y-m-d');
 
-            $sql = "INSERT INTO periodo (fecha_inicio, fecha_fin) VALUES (?, ?)";
+            $sql = "INSERT INTO periodo (fecha_inicio, fecha_fin) VALUES (:fecha_inicio, :fecha_fin)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ss", $fecha_inicio_formato, $fecha_fin_formato);
+            $stmt->bindValue(':fecha_inicio', $fecha_inicio_formato, PDO::PARAM_STR);
+            $stmt->bindValue(':fecha_fin', $fecha_fin_formato, PDO::PARAM_STR);
         } else {
             echo "Formato de fecha incorrecto.";
             exit();
@@ -57,13 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($fotografia) {
             $target_dir = "uploads/";
-            // Asegúrate de generar un nombre único para evitar conflictos
             $fotografia = uniqid() . "_" . basename($fotografia);
             $target_file = $target_dir . $fotografia;
     
-            // Mueve el archivo subido a la carpeta de destino
             if (move_uploaded_file($_FILES['fotografia']['tmp_name'], $target_file)) {
-                $fotoPath = $fotografia; // Solo guardar el nombre del archivo en la base de datos
+                $fotoPath = $fotografia;
             } else {
                 echo "Error al mover el archivo.";
                 exit();
@@ -71,18 +75,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $sql = "INSERT INTO estudiante (id_cedula, nombre_estudiante, celular, correo_institucional, fotografia) 
-                VALUES (?, ?, ?, ?, ?)";
+                VALUES (:id_cedula, :nombre_estudiante, :celular, :correo_institucional, :fotografia)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issss", $id_cedula, $nombre_estudiante, $celular, $correo_institucional, $fotoPath);
+        $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_INT);
+        $stmt->bindValue(':nombre_estudiante', $nombre_estudiante, PDO::PARAM_STR);
+        $stmt->bindValue(':celular', $celular, PDO::PARAM_STR);
+        $stmt->bindValue(':correo_institucional', $correo_institucional, PDO::PARAM_STR);
+        $stmt->bindValue(':fotografia', $fotoPath, PDO::PARAM_STR);
     } elseif ($tipo === 'matricula') {
         $id_periodo = $_POST['id_periodo'];
         $id_carrera = $_POST['id_carrera'];
         $id_ciclo = $_POST['id_ciclo'];
         $id_cedula = $_POST['id_cedula'];
 
-        $sql = "INSERT INTO matricula (id_periodo, id_carrera, id_ciclo, id_cedula) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO matricula (id_periodo, id_carrera, id_ciclo, id_cedula) VALUES (:id_periodo, :id_carrera, :id_ciclo, :id_cedula)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iiii", $id_periodo, $id_carrera, $id_ciclo, $id_cedula);
+        $stmt->bindValue(':id_periodo', $id_periodo, PDO::PARAM_INT);
+        $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
+        $stmt->bindValue(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
+        $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_INT);
     }
 
     // Ejecutar la consulta
@@ -90,10 +101,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: principal.php");
         exit();
     } else {
-        echo "Error: " . $stmt->error;
+        echo "Error: " . $stmt->errorInfo()[2];
     }
 
-    $stmt->close();
-    $conn->close();
+    $stmt->closeCursor();
+    $conn = null;
 }
 ?>
