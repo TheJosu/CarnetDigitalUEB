@@ -7,10 +7,6 @@ session_start(); // Iniciar sesión
 // Conectar a la base de datos
 include 'config/database.php';
 
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
-
 // Verificar si se ha subido un archivo
 if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
     $fileTmpPath = $_FILES['archivo']['tmp_name'];
@@ -44,52 +40,55 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                 $nombre_estudiante = trim($primer_apellido) . ' ' . trim($segundo_apellido) . ' ' . trim($nombres);
 
                 // Verificar si el estudiante está registrado en la tabla de estudiantes
-                $stmt = $conn->prepare('SELECT id_cedula FROM estudiante WHERE id_cedula = ?');
-                $stmt->bind_param('s', $id_cedula);
+                $stmt = $conn->prepare('SELECT id_cedula FROM estudiante WHERE id_cedula = :id_cedula');
+                $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                 $stmt->execute();
-                $result = $stmt->get_result();
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if ($result->num_rows > 0) {
+                if ($result) {
                     // Verificar si el estudiante está registrado en la tabla de matrícula
-                    $stmt = $conn->prepare('SELECT id_matricula FROM matricula WHERE id_cedula = ?');
-                    $stmt->bind_param('s', $id_cedula);
+                    $stmt = $conn->prepare('SELECT id_matricula FROM matricula WHERE id_cedula = :id_cedula');
+                    $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                     $stmt->execute();
-                    $result = $stmt->get_result();
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    if ($result->num_rows > 0) {
+                    if ($result) {
                         // El estudiante ya está registrado en ambas tablas, continuar al siguiente registro
                         continue;
                     } else {
                         // Obtener ID de la carrera
-                        $stmt = $conn->prepare('SELECT id_carrera FROM carrera WHERE nombre_carrera = ?');
-                        $stmt->bind_param('s', $carrera);
+                        $stmt = $conn->prepare('SELECT id_carrera FROM carrera WHERE nombre_carrera = :carrera');
+                        $stmt->bindValue(':carrera', $carrera, PDO::PARAM_STR);
                         $stmt->execute();
-                        $result = $stmt->get_result();
-                        $id_carrera = $result->num_rows > 0 ? $result->fetch_assoc()['id_carrera'] : null;
+                        $id_carrera = $stmt->fetch(PDO::FETCH_ASSOC)['id_carrera'] ?? null;
 
                         // Obtener ID del ciclo
-                        $stmt = $conn->prepare('SELECT id_ciclo FROM ciclo WHERE nombre_ciclo = ?');
-                        $stmt->bind_param('s', $ciclo);
+                        $stmt = $conn->prepare('SELECT id_ciclo FROM ciclo WHERE nombre_ciclo = :ciclo');
+                        $stmt->bindValue(':ciclo', $ciclo, PDO::PARAM_STR);
                         $stmt->execute();
-                        $result = $stmt->get_result();
-                        $id_ciclo = $result->num_rows > 0 ? $result->fetch_assoc()['id_ciclo'] : null;
+                        $id_ciclo = $stmt->fetch(PDO::FETCH_ASSOC)['id_ciclo'] ?? null;
 
                         // Insertar el nuevo registro en la tabla de matrícula
-                        $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (?, ?, ?, 1)');
-                        $stmt->bind_param('sii', $id_cedula, $id_carrera, $id_ciclo);
+                        $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
+                        $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
+                        $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
+                        $stmt->bindValue(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
                         $stmt->execute();
 
                         $new_records_inserted = true;
                     }
                 } else {
                     // Insertar el nuevo registro en la tabla de estudiantes
-                    $stmt = $conn->prepare('INSERT INTO estudiante (nombre_estudiante, id_cedula, fotografia, correo_institucional, celular) VALUES (?, ?, NULL, NULL, NULL)');
-                    $stmt->bind_param('ss', $nombre_estudiante, $id_cedula);
+                    $stmt = $conn->prepare('INSERT INTO estudiante (nombre_estudiante, id_cedula, fotografia, correo_institucional, celular) VALUES (:nombre_estudiante, :id_cedula, NULL, NULL, NULL)');
+                    $stmt->bindValue(':nombre_estudiante', $nombre_estudiante, PDO::PARAM_STR);
+                    $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                     $stmt->execute();
 
                     // Insertar el nuevo registro en la tabla de matrícula
-                    $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (?, ?, ?, 1)');
-                    $stmt->bind_param('sii', $id_cedula, $id_carrera, $id_ciclo);
+                    $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
+                    $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
+                    $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
+                    $stmt->bindValue(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
                     $stmt->execute();
 
                     $new_records_inserted = true;
@@ -121,5 +120,5 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
     echo "No se ha subido ningún archivo o ha ocurrido un error.";
 }
 
-$conn->close();
+$conn = null; // Cerrar la conexión
 ?>
