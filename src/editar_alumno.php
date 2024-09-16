@@ -2,8 +2,11 @@
 // Conectar a la base de datos
 include 'config/database.php';
 
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+try {
+    $conn = new PDO("pgsql:host=$host;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Error de conexión: " . $e->getMessage());
 }
 
 // Obtener los datos del alumno a editar
@@ -12,12 +15,13 @@ $id_estudiante = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id_estudiante > 0) {
     $sql = "SELECT id_cedula, fotografia, nombre_estudiante, celular, correo_institucional 
             FROM estudiante 
-            WHERE id_cedula = ?";
+            WHERE id_cedula = :id_estudiante";
+    
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('i', $id_estudiante);
+    $stmt->bindValue(':id_estudiante', $id_estudiante, PDO::PARAM_INT);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$row) {
         die("Alumno no encontrado.");
@@ -52,19 +56,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Actualizar los datos del alumno
     $sql = "UPDATE estudiante 
-            SET fotografia = ?, nombre_estudiante = ?, celular = ?, correo_institucional = ? 
-            WHERE id_cedula = ?";
+            SET fotografia = :fotoPath, nombre_estudiante = :nombre, celular = :telefono, correo_institucional = :correo
+            WHERE id_cedula = :id_estudiante";
+
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('ssssi', $fotoPath, $nombre, $telefono, $correo, $id_estudiante);
+    $stmt->bindValue(':fotoPath', $fotoPath, PDO::PARAM_STR);
+    $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+    $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
+    $stmt->bindValue(':correo', $correo, PDO::PARAM_STR);
+    $stmt->bindValue(':id_estudiante', $id_estudiante, PDO::PARAM_INT);
 
     if ($stmt->execute()) {
         header('Location: poe.php');
     } else {
-        echo "Error al actualizar los datos del alumno: " . $conn->error;
+        echo "Error al actualizar los datos del alumno: " . $conn->errorInfo()[2];
     }
 }
 
-$conn->close();
+$conn = null;  // Cerrar la conexión
 ?>
 
 <!DOCTYPE html>
@@ -84,6 +93,7 @@ $conn->close();
             <div class="bottom-text">CARNET DIGITAL</div>
         </div>
     </div>
+
     <div class="container">
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . "?id=" . $id_estudiante; ?>" enctype="multipart/form-data">
             <label for="id_estudiante">ID de Estudiante:</label>
