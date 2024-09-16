@@ -121,8 +121,23 @@ $pdf->Cell(round($cedulaWidth), round(50), utf8_decode($cedulaTexto), 0, 1, 'C')
 $pdf->SetFont('Times', 'I', 50);
 $pdf->SetTextColor(58, 58, 58); // plomo
 
-// Resto del código sin cambios...
+// Rol
+$pdf->SetXY(intval(110), intval(1600));
+$pdf->Cell(0, 50, utf8_decode('Rol: ') . utf8_decode("Estudiante"), 0, 1);
 
+// Modalidad (desde la tabla carrera)
+$pdf->SetXY(intval(110), intval(1650));
+$pdf->Cell(0, 50, utf8_decode('Modalidad: ') . utf8_decode($student['modalidad']), 0, 1);
+
+// Facultad (con MultiCell para manejar texto extenso)
+$pdf->SetXY(intval(110), intval(1700));
+$pdf->MultiCell(intval(1200), intval(50), utf8_decode('Facultad: ') . utf8_decode($student['nombre_facultad']), 0, 'L');
+
+// Carrera (extraída de la tabla `carrera`)
+$pdf->SetX(intval(110)); // Restablece la posición X a 110 para la siguiente línea
+$pdf->Cell(intval(0), intval(50), utf8_decode('Carrera: ') . utf8_decode($student['nombre_carrera']), 0, 1);
+
+// Descargar o visualizar el PDF
 $pdfFile = 'carnet_digital.pdf';
 $pdf->Output('F', $pdfFile);
 
