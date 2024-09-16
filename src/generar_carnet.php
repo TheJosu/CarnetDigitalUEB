@@ -136,16 +136,20 @@ $pdf->Output('F', $pdfFile);
 
 $action = $_GET['action'] ?? '';
 
+// Asegúrate de que no haya ninguna salida previa antes de este bloque
 if ($action == 'download') {
+    // Descargar el PDF
     header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="carnet_digital.pdf"');
     readfile($pdfFile);
-    unlink($pdfFile);
+    unlink($pdfFile); // Eliminar el archivo temporal después de la descarga
     exit();
 } else if ($action == 'view') {
+    // Mostrar el PDF
     header('Content-Type: application/pdf');
     readfile($pdfFile);
-    unlink($pdfFile);
+    unlink($pdfFile); // Eliminar el archivo temporal después de visualizarlo
     exit();
 }
+
 ?>
