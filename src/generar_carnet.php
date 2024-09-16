@@ -1,63 +1,59 @@
 <?php
-ob_start(); // Inicia el almacenamiento en búfer de salida
-
 require 'FPDF/fpdf.php';
 require 'vendor/phpqrcode/qrlib.php';
 
 class PDF extends FPDF {
     function Header() {
-        // Aquí se puede agregar un encabezado
+        // Aquí se puede agregar un encabezado personalizado
     }
 }
 
 // Conectamos a la base de datos y recuperamos los datos del estudiante
-$ci = $_GET['ci'];
+$ci = $_GET['ci']; // Cédula de identidad del estudiante
 include 'config/database.php';
 
-// No existe "connect_error" en PDO
-if (!$conn) {
-    die("Conexión fallida: No se pudo establecer la conexión a la base de datos.");
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
 }
 
-$sql = "SELECT e.*, f.nombre_facultad, c.nombre_carrera, cl.nombre_ciclo, p.fecha_inicio, p.fecha_fin 
+// Consulta para obtener datos del estudiante, la facultad y la modalidad desde la tabla carrera
+$sql = "SELECT e.id_cedula, e.fotografia, e.nombre_estudiante, c.modalidad, f.nombre_facultad, c.nombre_carrera
         FROM estudiante e
-        JOIN facultad f ON e.id_facultad = f.id_facultad
-        JOIN carrera c ON e.id_carrera = c.id_carrera
-        JOIN ciclo cl ON e.id_ciclo = cl.id_ciclo
-        JOIN periodo p ON e.id_periodo = p.id_periodo
-        WHERE e.id_cedula = :ci";  // Cambiamos a ":ci" para PDO
-
+        JOIN matricula m ON e.id_cedula = m.id_cedula
+        JOIN carrera c ON m.id_carrera = c.id_carrera
+        JOIN facultad f ON c.id_facultad = f.id_facultad
+        WHERE e.id_cedula = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bindParam(':ci', $ci, PDO::PARAM_STR);  // Cambiar a PDO
-
+$stmt->bind_param("s", $ci);
 $stmt->execute();
-$student = $stmt->fetch(PDO::FETCH_ASSOC);
+$result = $stmt->get_result();
 
-if ($student === false) {
+if ($result->num_rows > 0) {
+    $student = $result->fetch_assoc();
+} else {
     die("Estudiante no encontrado.");
 }
+$stmt->close();
+$conn->close();
 
-$stmt = null;  // Cerramos el statement
-$conn = null;  // Cerramos la conexión
-
-$fecha_inicio = DateTime::createFromFormat('Y-m-d', $student['fecha_inicio']);
-$fecha_fin = DateTime::createFromFormat('Y-m-d', $student['fecha_fin']);
-$periodo_academico = $fecha_inicio->format('F Y') . ' - ' . $fecha_fin->format('F Y');
-
+// Crear el PDF
 $pdf = new PDF('P', 'pt', array(1365, 2427)); // Dimensiones en puntos (pt)
 $pdf->AddPage();
 
 // Agregar FOTO de fondo
-$fotoPath = 'uploads/' . $student['fotografia'];
+$fotoPath = 'uploads/' . $student['fotografia']; // Asegúrate de que $student['fotografia'] tenga una extensión válida
 
-if (file_exists($fotoPath)) {
-    $pdf->Image($fotoPath, round(440), round(750), round(600), round(650));
+$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+$extension = pathinfo($fotoPath, PATHINFO_EXTENSION);
+
+if (in_array($extension, $allowedExtensions) && file_exists($fotoPath)) {
+    $pdf->Image($fotoPath, 440, 750, 600, 650);
 } else {
-    die("La imagen no se pudo cargar correctamente.");
+    die("La imagen no se pudo cargar correctamente o no es una extensión válida.");
 }
 
-// Agregar qr fondo
-$qrData = 'https://carnetdigitalueb.onrender.com/src/validacion.php?ci=' . urlencode($ci);
+// Agregar QR code
+$qrData = 'http://localhost:8081/Carnet/src/validacion.php?ci=' . urlencode($ci);
 $qrFile = 'qrcode.png';
 QRcode::png($qrData, $qrFile, QR_ECLEVEL_L, 10);
 
@@ -82,65 +78,59 @@ imagedestroy($qrImage);
 imagedestroy($logo);
 imagedestroy($logoResized);
 
-$pdf->Image($qrFile, round(0), round(1900), round(500), round(550));
+$pdf->Image($qrFile, 0, 1900, 500, 550);
 
+// Agregar imagen de fondo
 $fondoPath = 'fondo2.png'; // Ruta de la imagen de fondo
 
 if (file_exists($fondoPath)) {
-    $pdf->Image($fondoPath, round(0), round(0), round(1365), round(2427)); // Ajustar la imagen para que ocupe todo el fondo
+    $pdf->Image($fondoPath, 0, 0, 1365, 2427); // Ajustar la imagen para que ocupe todo el fondo
 }
 
 // Información del estudiante
-//Nombre
+// Nombre
 $pdf->SetFont('Times', 'Bu', 90);
 $pdf->SetTextColor(0, 0, 0); // NEGRO
-// Obtener el ancho de la página
-$pdf->SetXY(round(90), round(1380));
+$pdf->SetXY(90, 1380);
 $pageWidth = $pdf->GetPageWidth();
-// Obtener el ancho del texto del nombre del estudiante
 $nombreWidth = $pdf->GetStringWidth(utf8_decode($student['nombre_estudiante']));
-// Calcular la posición X para centrar el texto
 $nombreX = ($pageWidth - $nombreWidth) / 2;
-// Establecer la posición para el nombre centrado
-$pdf->SetXY(round($nombreX), $pdf->GetY() + 50); // Ajustar Y según necesites
-$pdf->Cell(round($nombreWidth), round(50), utf8_decode($student['nombre_estudiante']), 0, 1, 'C');
+$pdf->SetXY($nombreX, $pdf->GetY() + 50); // Ajustar Y según necesites
+$pdf->Cell($nombreWidth, 50, utf8_decode($student['nombre_estudiante']), 0, 1, 'C');
 
 // Cédula
 $pdf->SetFont('Times', 'I', 90);
-// Obtener el texto completo para la cédula
-$cedulaTexto =  $student['id_cedula'];
-// Obtener el ancho del texto de la cédula
+$cedulaTexto = $student['id_cedula'];
 $cedulaWidth = $pdf->GetStringWidth(utf8_decode($cedulaTexto));
-// Calcular la posición X para centrar la cédula
 $cedulaX = ($pageWidth - $cedulaWidth) / 2;
-// Establecer la posición para la cédula centrada justo debajo del nombre
-$pdf->SetXY(round($cedulaX), $pdf->GetY() + 50); // Ajustar Y según necesites
-$pdf->Cell(round($cedulaWidth), round(50), utf8_decode($cedulaTexto), 0, 1, 'C');
-
-$pdf->SetFont('Times', 'I', 50);
-$pdf->SetTextColor(58, 58, 58); // plomo
+$pdf->SetXY($cedulaX, $pdf->GetY() + 50); // Ajustar Y según necesites
+$pdf->Cell($cedulaWidth, 50, utf8_decode($cedulaTexto), 0, 1, 'C');
 
 // Rol
-$pdf->SetXY(round(110), round(1600));
-$pdf->Cell(round(0), round(50), utf8_decode('Rol: ') . utf8_decode($student['rol']), 0, 1);
+$pdf->SetFont('Times', 'I', 50);
+$pdf->SetTextColor(58, 58, 58); // Plomo
+$pdf->SetXY(110, 1600);
+$pdf->Cell(0, 50, utf8_decode('Rol: ') . utf8_decode("Estudiante"), 0, 1);
 
-// Modalidad
-$pdf->SetXY(round(110), round(1650));
-$pdf->Cell(round(0), round(50), utf8_decode('Modalidad: ') . utf8_decode($student['modalidad']), 0, 1);
+// Modalidad (desde la tabla carrera)
+$pdf->SetFont('Times', 'I', 50);
+$pdf->SetTextColor(58, 58, 58); // Plomo
+$pdf->SetXY(110, 1650);
+$pdf->Cell(0, 50, utf8_decode('Modalidad: ') . utf8_decode($student['modalidad']), 0, 1);
 
 // Facultad (con MultiCell para manejar texto extenso)
 $pdf->SetXY(round(110), round(1700));
 $pdf->MultiCell(round(1200), round(50), utf8_decode('Facultad: ') . utf8_decode($student['nombre_facultad']), 0, 'L');
 
-// Reajustar la posición X antes de imprimir "Carrera"
-$pdf->SetX(round(110)); // Restablece la posición X a 90 para la siguiente línea
+// Carrera (extraída de la tabla `carrera`)
+$pdf->SetX(round(110)); // Restablece la posición X a 110 para la siguiente línea
 $pdf->Cell(round(0), round(50), utf8_decode('Carrera: ') . utf8_decode($student['nombre_carrera']), 0, 1);
 
-//DESCARGAR
+// Descargar o visualizar el PDF
 $pdfFile = 'carnet_digital.pdf';
 $pdf->Output('F', $pdfFile);
 
-$action = $_GET['action'];
+$action = $_GET['action'] ?? '';
 
 if ($action == 'download') {
     header('Content-Type: application/pdf');
@@ -154,6 +144,4 @@ if ($action == 'download') {
     unlink($pdfFile);
     exit();
 }
-
-ob_end_flush(); // Finaliza el almacenamiento en búfer de salida
 ?>

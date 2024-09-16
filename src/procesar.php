@@ -4,30 +4,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Conectar a la base de datos
     include 'config/database.php';
+    if ($conn->connect_error) {
+        die("Conexión fallida: " . $conn->connect_error);
+    }
 
-    // Preparar la consulta y ejecutar según el tipo de formulario
     if ($tipo === 'facultad') {
         $nombre_facultad = $_POST['nombre_facultad'];
-        $sql = "INSERT INTO Facultad (nombre_facultad) VALUES (:nombre_facultad)";
+        $sql = "INSERT INTO facultad (nombre_facultad) VALUES (?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':nombre_facultad', $nombre_facultad, PDO::PARAM_STR);
-
+        $stmt->bind_param("s", $nombre_facultad);
     } elseif ($tipo === 'carrera') {
         $nombre_carrera = $_POST['nombre_carrera'];
         $id_facultad = $_POST['id_facultad'];
-        $sql = "INSERT INTO Carrera (nombre_carrera, id_facultad) VALUES (:nombre_carrera, :id_facultad)";
+        $modalidad = $_POST['modalidad'];
+        $sql = "INSERT INTO carrera (nombre_carrera, id_facultad, modalidad) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':nombre_carrera', $nombre_carrera, PDO::PARAM_STR);
-        $stmt->bindParam(':id_facultad', $id_facultad, PDO::PARAM_INT);
-
+        $stmt->bind_param("sis", $nombre_carrera, $id_facultad, $modalidad);
     } elseif ($tipo === 'ciclo') {
         $nombre_ciclo = $_POST['nombre_ciclo'];
         $id_carrera = $_POST['id_carrera'];
-        $sql = "INSERT INTO Ciclo (nombre_ciclo, id_carrera) VALUES (:nombre_ciclo, :id_carrera)";
+        $sql = "INSERT INTO ciclo (nombre_ciclo, id_carrera) VALUES (?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':nombre_ciclo', $nombre_ciclo, PDO::PARAM_STR);
-        $stmt->bindParam(':id_carrera', $id_carrera, PDO::PARAM_INT);
-
+        $stmt->bind_param("si", $nombre_ciclo, $id_carrera);
     } elseif ($tipo === 'periodo') {
         $fecha_inicio = $_POST['fecha_inicio'];
         $fecha_fin = $_POST['fecha_fin'];
@@ -40,26 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fecha_inicio_formato = $fecha_inicio->format('Y-m-d');
             $fecha_fin_formato = $fecha_fin->format('Y-m-d');
 
-            $sql = "INSERT INTO Periodo (fecha_inicio, fecha_fin) VALUES (:fecha_inicio, :fecha_fin)";
+            $sql = "INSERT INTO periodo (fecha_inicio, fecha_fin) VALUES (?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':fecha_inicio', $fecha_inicio_formato, PDO::PARAM_STR);
-            $stmt->bindParam(':fecha_fin', $fecha_fin_formato, PDO::PARAM_STR);
+            $stmt->bind_param("ss", $fecha_inicio_formato, $fecha_fin_formato);
         } else {
             echo "Formato de fecha incorrecto.";
             exit();
         }
-
     } elseif ($tipo === 'estudiante') {
         $id_cedula = $_POST['id_cedula'];
         $nombre_estudiante = $_POST['nombre_estudiante'];
-        $rol = $_POST['rol'];
         $celular = $_POST['celular'];
         $correo_institucional = $_POST['correo_institucional'];
-        $id_facultad = $_POST['id_facultad'];
-        $id_carrera = $_POST['id_carrera'];
-        $id_periodo = $_POST['id_periodo'];
-        $id_ciclo = $_POST['id_ciclo'];
-        $modalidad = $_POST['modalidad'];
 
         // Procesamiento de la fotografía
         $fotografia = $_FILES['fotografia']['name'];
@@ -80,34 +70,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        $sql = "INSERT INTO Estudiante (id_cedula, nombre_estudiante, rol, celular, correo_institucional, id_facultad, id_carrera, id_periodo, id_ciclo, modalidad, fotografia) 
-                VALUES (:id_cedula, :nombre_estudiante, :rol, :celular, :correo_institucional, :id_facultad, :id_carrera, :id_periodo, :id_ciclo, :modalidad, :fotografia)";
+        $sql = "INSERT INTO estudiante (id_cedula, nombre_estudiante, celular, correo_institucional, fotografia) 
+                VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id_cedula', $id_cedula, PDO::PARAM_INT);
-        $stmt->bindParam(':nombre_estudiante', $nombre_estudiante, PDO::PARAM_STR);
-        $stmt->bindParam(':rol', $rol, PDO::PARAM_STR);
-        $stmt->bindParam(':celular', $celular, PDO::PARAM_STR);
-        $stmt->bindParam(':correo_institucional', $correo_institucional, PDO::PARAM_STR);
-        $stmt->bindParam(':id_facultad', $id_facultad, PDO::PARAM_INT);
-        $stmt->bindParam(':id_carrera', $id_carrera, PDO::PARAM_INT);
-        $stmt->bindParam(':id_periodo', $id_periodo, PDO::PARAM_INT);
-        $stmt->bindParam(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
-        $stmt->bindParam(':modalidad', $modalidad, PDO::PARAM_STR);
-        $stmt->bindParam(':fotografia', $fotoPath, PDO::PARAM_STR);
+        $stmt->bind_param("issss", $id_cedula, $nombre_estudiante, $celular, $correo_institucional, $fotoPath);
+    } elseif ($tipo === 'matricula') {
+        $id_periodo = $_POST['id_periodo'];
+        $id_carrera = $_POST['id_carrera'];
+        $id_ciclo = $_POST['id_ciclo'];
+        $id_cedula = $_POST['id_cedula'];
+
+        $sql = "INSERT INTO matricula (id_periodo, id_carrera, id_ciclo, id_cedula) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiii", $id_periodo, $id_carrera, $id_ciclo, $id_cedula);
     }
 
     // Ejecutar la consulta
-    try {
-        if ($stmt->execute()) {
-            header("Location: formulario.php");
-            exit();
-        } else {
-            echo "Error: " . $stmt->errorInfo()[2];
-        }
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+    if ($stmt->execute()) {
+        header("Location: principal.php");
+        exit();
+    } else {
+        echo "Error: " . $stmt->error;
     }
 
-    $stmt->closeCursor(); // No es estrictamente necesario con PDO, pero puedes usarlo para liberar recursos
+    $stmt->close();
+    $conn->close();
 }
 ?>

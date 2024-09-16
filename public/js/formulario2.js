@@ -16,4 +16,23 @@ menuToggle.addEventListener('click', () => {
 });
 
 // Show the first form by default
-document.querySelector('.nav-menu a').click();
+document.getElementById('id_cedula').addEventListener('blur', function() {
+    const idCedula = this.value;
+    
+    if (idCedula) {
+        fetch(`consultar_estudiante.php?id_cedula=${idCedula}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Verifica que los datos están llegando correctamente
+                if (data) {
+                    document.getElementById('nombre_estudiante').value = data.nombre;
+                    document.getElementById('celular').value = data.celular;
+                    document.getElementById('correo_institucional').value = data.correo_institucional;
+                    // Completa los otros campos según sea necesario
+                } else {
+                    alert('No se encontró el estudiante con esta cédula.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+});

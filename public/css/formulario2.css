@@ -1,131 +1,108 @@
+/* General */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
+    font-family: 'Roboto Condensed', sans-serif;
+    background-color: #f4f4f4;
+    color: #091a38;
+    margin: 10px;
+    padding: 0;
 }
 
-header {
-    background-color: #0b283f;
-    color: #ffffff;
-    padding: 15px 20px;
-    display: flex;
+/* Header Logo */
+.header-logo {
+    display: flex; /* Usar flexbox para organizar la imagen y el texto en línea */
     justify-content: space-between;
-    align-items: center;
+    align-items: center; /* Centrar verticalmente */
+    padding: 20px;
+    background-color: #0b283f; /* Fondo azul */
+    border-radius: 10px; /* Agregar bordes redondeados */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Añadir sombra */
+    color: #ffffff; /* Color del texto en blanco */
 }
 
-.logo img {
-    width: 150px;
+.header-logo img {
+    max-width: 200px; /* Tamaño máximo del logo */
+    height: auto;
 }
 
+.text-container {
+    text-align: center; /* Centrar el texto horizontalmente */
+}
+
+.text-container .top-text {
+    font-size: 1.2em; /* Ajusta el tamaño según sea necesario */
+}
+
+.text-container .bottom-text {
+    color: #e80a0a; /* Color del texto en rojo */
+    font-size: 1.5em; /* Ajusta el tamaño según sea necesario */
+}
+
+/* Asegurar que el texto siempre sea visible */
+.header-logo a, 
+.header-logo a:visited {
+    color: #ffffff; /* Color del texto del enlace en blanco */
+    text-decoration: none; /* Quitar el subrayado del enlace */
+}
+
+.header-logo a:hover {
+    text-decoration: underline; /* Subrayar el enlace al pasar el ratón */
+}
+
+
+/* Menú de Navegación */
 .nav-menu {
-    display: flex;
-    margin-top: 20px;
+    background-color: #ffffff; /* Fondo oscuro para el menú */
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px auto;
+    max-width: 1000px;
+    text-align: center;
 }
 
 .nav-menu ul {
-    list-style-type: none;
-    margin: 0;
+    list-style: none;
     padding: 0;
-    display: flex;
+    margin: 0;
+    display: flex; /* Distribuir elementos en línea */
+    justify-content: space-around;
 }
 
-.nav-menu ul li {
-    margin: 0 15px;
+.nav-menu li {
+    margin: 0 10px; /* Espacio entre cada elemento */
 }
 
-.nav-menu ul li a {
-    color: #ffffff;
+.nav-menu a {
     text-decoration: none;
-    padding: 10px;
-    background-color: #e80a0a;
-    border-radius: 5px;
+    color: #e80a0a;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s, transform 0.3s;
 }
 
-.nav-menu ul li a:hover {
-    background-color: #0b283f;
+.nav-menu a i {
+    font-size: 1.5em;
 }
 
-/* Responsive Styles */
-@media (max-width: 550px) {
-    .menu-toggle {
-        display: block;
-        cursor: pointer;
-        margin: 0 20px;
-    }
+.nav-menu a:hover {
+    color: #0b283f; /* Cambia de color al pasar el ratón */
+    transform: scale(1.1); /* Aumenta ligeramente el tamaño del texto e íconos */
+}
 
-    .nav-menu {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
-
+/* Responsive Design para pantallas pequeñas */
+@media (max-width: 768px) {
     .nav-menu ul {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 0;
-        margin: 5px;
-    }
-
-    .nav-menu ul li {
-        margin: 20px;
-        width: calc(50% - auto); /* Ajusta el tamaño para dos columnas */
-    }
-
-    .nav-menu ul li a {
-        padding: 15px;
-        font-size: 14px;
-        text-align: center;
-        width: 100%;
+        flex-direction: column; /* Cambia a diseño vertical en móviles */
         align-items: center;
-        margin: 5px;
     }
-}
 
-.main {
-    padding: 20px;
-}
+    .nav-menu li {
+        margin: 10px 0; /* Espacio vertical entre elementos */
+    }
 
-.form-container {
-    display: none;
-    background-color: #0b283f;
-    padding: 20px;
-    color: #ffffff;
-    border-radius: 10px;
-    margin: 20px 0;
-}
-
-.form-container.active {
-    display: block;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.form-group input,
-.form-group select,
-.form-group button {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    box-sizing: border-box;
-}
-
-button[type="submit"] {
-    background-color: #e80a0a;
-    color: #ffffff;
-    cursor: pointer;
-}
-
-button[type="submit"]:hover {
-    background-color: #ffffff;
-    color: #0b283f;
-    border: 2px solid #e80a0a;
+    .nav-menu a i {
+        font-size: 1.3em; /* Ajustar tamaño de los íconos en pantallas pequeñas */
+    }
 }

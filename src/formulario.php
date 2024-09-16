@@ -4,30 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Ingreso de Datos</title>
-   <link rel="stylesheet" href="https://carnetdigitalueb.onrender.com/public/css/formulario2.css">
+    <link rel="stylesheet" href="../public/css/formulario2.css">
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <img src="img/logotipo-ueb2.png" alt="Logotipo UEB">
-        </div>
-        
-        <div class="menu-toggle">
-            <span class="menu-icon"></span>
-        </div>
-    </header>
-    <nav class="nav-menu">
-            <ul>
-                <li><a href="#" data-form="form-facultad">Facultad</a></li>
-                <li><a href="#" data-form="form-carrera">Carrera</a></li>
-                <li><a href="#" data-form="form-ciclo">Ciclo</a></li>
-                <li><a href="#" data-form="form-periodo">Periodo</a></li>
-                <li><a href="#" data-form="form-estudiante">Estudiante</a></li>
-            </ul>
-        </nav>
-    <main>
-        <!-- Formularios -->
+<header>
 
+      <img src="img/logotipo-ueb2.png" alt="Logotipo UEB">
+
+</header>
+
+     <!-- Menú de Navegación Mejorado -->
+     <nav class="nav-menu">
+        <ul>
+            <li><a href="formulario-facultad.php"><i class="fas fa-university"></i> Facultad</a></li>
+            <li><a href="formulario-carrera.php"><i class="fas fa-graduation-cap"></i> Carrera</a></li>
+            <li><a href="formulario-ciclo.php"><i class="fas fa-calendar"></i> Ciclo</a></li>
+            <li><a href="formulario-periodo.php"><i class="fas fa-clock"></i> Periodo</a></li>
+            <li><a href="formulario-estudiante.php"><i class="fas fa-user-graduate"></i> Estudiante</a></li>
+            <li><a href="formulario-masivo.php"><i class="fas fa-upload"></i> Subida Masiva de Datos</a></li>
+            <li><a href="formulario-matricula.php"><i class="fas fa-book"></i> Matricula</a></li>
+            <li><a href="poe.php"><i class="fas fa-edit"></i> Editar Datos de Alumnos</a></li>
+        </ul>
+    </nav>
+
+    <main>
         <!-- Formulario para Facultad -->
         <div id="form-facultad" class="form-container">
             <h2>Agregar Facultad</h2>
@@ -42,61 +42,82 @@
         </div>
 
         <!-- Formulario para Carrera -->
-<div id="form-carrera" class="form-container">
-    <h2>Agregar Carrera</h2>
-    <form action="procesar.php" method="POST">
-        <input type="hidden" name="tipo" value="carrera">
-        <div class="form-group">
-            <label for="nombre_carrera">Nombre de la Carrera:</label>
-            <input type="text" id="nombre_carrera" name="nombre_carrera" required>
+        <div id="form-carrera" class="form-container">
+            <h2>Agregar Carrera</h2>
+            <form action="procesar.php" method="POST">
+                <input type="hidden" name="tipo" value="carrera">
+                <div class="form-group">
+                    <label for="nombre_carrera">Nombre de la Carrera:</label>
+                    <input type="text" id="nombre_carrera" name="nombre_carrera" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_facultad">Facultad:</label>
+                    <select id="id_facultad" name="id_facultad" required>
+                        <option value="">Seleccione</option>
+                        <?php
+                        include 'config/database.php';
+                        if ($conn->connect_error) {
+                            die("Conexión fallida: " . $conn->connect_error);
+                        }
+                        $sql = "SELECT id_facultad, nombre_facultad FROM facultad";
+                        $result = $conn->query($sql);
+                        if ($result->num_rows > 0) {
+                            while($row = $result->fetch_assoc()) {
+                                echo "<option value=\"" . $row['id_facultad'] . "\">" . $row['nombre_facultad'] . "</option>";
+                            }
+                        }
+                        $conn->close();
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modalidad">Modalidad:</label>
+                    <select id="modalidad" name="modalidad" required>
+                        <option value="">Seleccione</option>
+                        <option value="Presencial">Presencial</option>
+                        <option value="Linea">Linea</option>
+                        <option value="Hibrida">Hibrida</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Agregar Carrera</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="id_facultad">Facultad:</label>
-            <select id="id_facultad" name="id_facultad" required>
-                <option value="">Seleccione</option>
-                <?php
-                include 'config/database.php';
-                $sql = "SELECT id_facultad, nombre_facultad FROM facultad";
-                $stmt = $conn->query($sql);
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<option value=\"" . htmlspecialchars($row['id_facultad']) . "\">" . htmlspecialchars($row['nombre_facultad']) . "</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <button type="submit">Agregar Carrera</button>
-    </form>
-</div>
 
-<!-- Formulario para Ciclo -->
-<div id="form-ciclo" class="form-container">
-    <h2>Agregar Ciclo</h2>
-    <form action="procesar.php" method="POST">
-        <input type="hidden" name="tipo" value="ciclo">
-        <div class="form-group">
-            <label for="nombre_ciclo">Nombre del Ciclo:</label>
-            <input type="text" id="nombre_ciclo" name="nombre_ciclo" required>
+        <!-- Formulario para Ciclo -->
+        <div id="form-ciclo" class="form-container">
+            <h2>Agregar Ciclo</h2>
+            <form action="procesar.php" method="POST">
+                <input type="hidden" name="tipo" value="ciclo">
+                <div class="form-group">
+                    <label for="nombre_ciclo">Nombre del Ciclo:</label>
+                    <input type="text" id="nombre_ciclo" name="nombre_ciclo" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_carrera">Carrera:</label>
+                    <select id="id_carrera" name="id_carrera" required>
+                        <option value="">Seleccione</option>
+                        <?php
+                        include 'config/database.php';
+                        if ($conn->connect_error) {
+                            die("Conexión fallida: " . $conn->connect_error);
+                        }
+                        $sql = "SELECT id_carrera, nombre_carrera FROM carrera";
+                        $result = $conn->query($sql);
+                        if ($result->num_rows > 0) {
+                            while($row = $result->fetch_assoc()) {
+                                echo "<option value=\"" . $row['id_carrera'] . "\">" . $row['nombre_carrera'] . "</option>";
+                            }
+                        }
+                        $conn->close();
+                        ?>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Agregar Ciclo</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="id_carrera">Carrera:</label>
-            <select id="id_carrera" name="id_carrera" required>
-                <option value="">Seleccione</option>
-                <?php
-                include 'config/database.php';
-                $sql = "SELECT id_carrera, nombre_carrera FROM carrera";
-                $stmt = $conn->query($sql);
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<option value=\"" . htmlspecialchars($row['id_carrera']) . "\">" . htmlspecialchars($row['nombre_carrera']) . "</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <button type="submit" class="submit-btn">Agregar Ciclo</button>
-    </form>
-</div>
 
-<!-- Formulario para Periodo -->
-<div id="form-periodo" class="form-container">
+        <!-- Formulario para Periodo -->
+        <div id="form-periodo" class="form-container">
             <h2>Agregar Periodo</h2>
             <form action="procesar.php" method="POST">
                 <input type="hidden" name="tipo" value="periodo">
@@ -111,112 +132,148 @@
                 <button type="submit" class="submit-btn">Agregar Periodo</button>
             </form>
         </div>
-        
-<!-- Formulario para Estudiante -->
-<div id="form-estudiante" class="form-container">
-    <h2>Agregar Estudiante</h2>
-    <form action="procesar.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="tipo" value="estudiante">
-        <div class="form-group">
-            <label for="id_cedula">ID de Cédula:</label>
-            <input type="number" id="id_cedula" name="id_cedula" required>
-        </div>
-        <div class="form-group">
-            <label for="fotografia">Fotografía:</label>
-            <input type="file" name="fotografia" accept="image/*" required>
-        </div>
-        <div class="form-group">
-            <label for="nombre_estudiante">Nombre:</label>
-            <input type="text" id="nombre_estudiante" name="nombre_estudiante" required>
-        </div>
-        <div class="form-group">
-            <label for="rol">Rol:</label>
-            <select id="rol" name="rol" required>
-                <option value="">Seleccione</option>
-                <option value="ESTUDIANTE">ESTUDIANTE</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="celular">Celular:</label>
-            <input type="text" id="celular" name="celular">
-        </div>
-        <div class="form-group">
-            <label for="correo_institucional">Correo Institucional:</label>
-            <input type="email" id="correo_institucional" name="correo_institucional" required>
-        </div>
-        <div class="form-group">
-            <label for="id_facultad_estudiante">Facultad:</label>
-            <select id="id_facultad_estudiante" name="id_facultad" required>
-                <option value="">Seleccione</option>
-                <?php
-                include 'config/database.php';
-                $sql = "SELECT id_facultad, nombre_facultad FROM facultad";
-                $stmt = $conn->query($sql);
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<option value=\"" . htmlspecialchars($row['id_facultad']) . "\">" . htmlspecialchars($row['nombre_facultad']) . "</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="id_carrera_estudiante">Carrera:</label>
-            <select id="id_carrera_estudiante" name="id_carrera" required>
-                <option value="">Seleccione</option>
-                <?php
-                include 'config/database.php';
-                $sql = "SELECT id_carrera, nombre_carrera FROM carrera";
-                $stmt = $conn->query($sql);
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<option value=\"" . htmlspecialchars($row['id_carrera']) . "\">" . htmlspecialchars($row['nombre_carrera']) . "</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="id_ciclo_estudiante">Ciclo:</label>
-            <select id="id_ciclo" name="id_ciclo" required>
-                <option value="">Seleccione</option>
-                <?php
-                include 'config/database.php';
-                $sql = "SELECT id_ciclo, nombre_ciclo FROM ciclo";
-                $stmt = $conn->query($sql);
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<option value=\"" . htmlspecialchars($row['id_ciclo']) . "\">" . htmlspecialchars($row['nombre_ciclo']) . "</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="id_periodo_estudiante">Periodo:</label>
-            <select id="id_periodo_estudiante" name="id_periodo" required>
-                <option value="">Seleccione</option>
-                <?php
-                include 'config/database.php';
-                $sql = "SELECT id_periodo, fecha_inicio, fecha_fin FROM periodo";
-                $stmt = $conn->query($sql);
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $inicio = new DateTime($row['fecha_inicio']);
-                    $fin = new DateTime($row['fecha_fin']);
-                    $periodo = $inicio->format('F Y') . " - " . $fin->format('F Y');
-                    echo "<option value=\"" . htmlspecialchars($row['id_periodo']) . "\">" . htmlspecialchars($periodo) . "</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="modalidad">Modalidad:</label>
-            <select id="modalidad" name="modalidad" required>
-                <option value="">Seleccione</option>
-                <option value="PRESENCIAL">PRESENCIAL</option>
-                <option value="VIRTUAL">VIRTUAL</option>
-                <option value="HIBRIDA">HIBRIDA</option>
-            </select>
-        </div>
-        <button type="submit" class="submit-btn">Agregar Estudiante</button>
-    </form>
-</div>
 
+        <!-- Formulario para Estudiante -->
+        <div id="form-estudiante" class="form-container">
+            <h2>Agregar Estudiante</h2>
+            <form action="procesar.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="tipo" value="estudiante">
+                <div class="form-group">
+                    <label for="id_cedula">ID de Cédula:</label>
+                    <input type="number" id="id_cedula" name="id_cedula" required>
+                </div>
+                <div class="form-group">
+                    <label for="fotografia">Fotografía:</label>
+                    <input type="file" name="fotografia" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="nombre_estudiante">Nombre:</label>
+                    <input type="text" id="nombre_estudiante" name="nombre_estudiante" required>
+                </div>
+                <div class="form-group">
+                    <label for="celular">Celular:</label>
+                    <input type="text" id="celular" name="celular">
+                </div>
+                <div class="form-group">
+                    <label for="correo_institucional">Correo Institucional:</label>
+                    <input type="email" id="correo_institucional" name="correo_institucional">
+                </div>
+                <button type="submit" class="submit-btn">Agregar Estudiante</button>
+            </form>
+        </div>
+
+        <!-- Formulario para Matricula -->
+        <div id="form-matricula" class="form-container">
+            <h2>Matricular Estudiante</h2>
+            <form action="procesar.php" method="POST">
+                <input type="hidden" name="tipo" value="matricula">
+                <div class="form-group">
+                    <label for="id_cedula">CI del Estudiante:</label>
+                    <input type="string" id="id_cedula" name="id_cedula" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_carrera">Carrera:</label>
+                    <select id="id_carrera" name="id_carrera" required>
+                        <option value="">Seleccione</option>
+                        <?php
+                        include 'config/database.php';
+                        if ($conn->connect_error) {
+                            die("Conexión fallida: " . $conn->connect_error);
+                        }
+                        $sql = "SELECT id_carrera, nombre_carrera FROM carrera";
+                        $result = $conn->query($sql);
+                        if ($result->num_rows > 0) {
+                            while($row = $result->fetch_assoc()) {
+                                echo "<option value=\"" . $row['id_carrera'] . "\">" . $row['nombre_carrera'] . "</option>";
+                            }
+                        }
+                        $conn->close();
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="id_ciclo">Ciclo:</label>
+                    <select id="id_ciclo" name="id_ciclo" required>
+                        <option value="">Seleccione</option>
+                        <?php
+                        include 'config/database.php';
+                        if ($conn->connect_error) {
+                            die("Conexión fallida: " . $conn->connect_error);
+                        }
+                        $sql = "SELECT id_ciclo, nombre_ciclo FROM ciclo";
+                        $result = $conn->query($sql);
+                        if ($result->num_rows > 0) {
+                            while($row = $result->fetch_assoc()) {
+                                echo "<option value=\"" . $row['id_ciclo'] . "\">" . $row['nombre_ciclo'] . "</option>";
+                            }
+                        }
+                        $conn->close();
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="id_periodo">Periodo:</label>
+                    <select id="id_periodo" name="id_periodo" required>
+                        <option value="">Seleccione</option>
+                        <?php
+                        include 'config/database.php';
+                        if ($conn->connect_error) {
+                            die("Conexión fallida: " . $conn->connect_error);
+                        }
+                        $sql = "SELECT id_periodo, fecha_inicio, fecha_fin FROM periodo";
+                        $result = $conn->query($sql);
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                $inicio = new DateTime($row['fecha_inicio']);
+                                $fin = new DateTime($row['fecha_fin']);
+                                $periodo = $inicio->format('F Y') . " - " . $fin->format('F Y');
+                                echo "<option value=\"" . $row['id_periodo'] . "\">" . $periodo . "</option>";
+                            }
+                        }
+                        $conn->close();
+                        ?>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Matricular Estudiante</button>
+            </form>
+        </div>
+
+        <!-- Formulario para Subida de datos Masivamente -->
+        <div id="form-masivo" class="form-container">
+            <h2>Carga Masiva de Datos</h2>
+            <form action="procesar_masivo.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="archivo">Archivo Excel (.xls/.xlsx):</label>
+                    <input type="file" id="archivo" name="archivo" accept=".xls,.xlsx" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Cargar Datos</button>
+            </form>
+        </div>
     </main>
+    <!-- Script para cargar ciclos dinámicamente -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#id_carrera').change(function() {
+                var idCarrera = $(this).val();
+
+                // Si se selecciona una carrera válida
+                if (idCarrera !== '') {
+                    $.ajax({
+                        url: 'obtener_ciclos.php',
+                        method: 'POST',
+                        data: { id_carrera: idCarrera },
+                        success: function(data) {
+                            $('#id_ciclo').html(data);
+                        }
+                    });
+                } else {
+                    $('#id_ciclo').html('<option value="">Seleccione una carrera primero</option>');
+                }
+            });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         // Apply flatpickr only to date fields in the "Agregar Periodo" form
@@ -238,6 +295,6 @@
 
         document.querySelector('.nav-menu a').click(); // Show the first form by default
     </script>                    
-    <script src="https://carnetdigitalueb.onrender.com/public/js/formulario2.js"></script>
+    <script src="../public/js/formulario2.js"></script>
 </body>
 </html>

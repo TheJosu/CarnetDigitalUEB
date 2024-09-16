@@ -13,7 +13,7 @@ $ci = htmlspecialchars($_GET['ci']);
 <body>
     <!-- Agregar el logotipo de la UEB -->
     <div class="header-logo">
-        <a href="../INDEX.html" width="150px";><img src="img/logotipo-ueb2.png" alt="Logotipo UEB"></a>
+        <a href="../INDEX.html" width="50px";><img src="img/logotipo-ueb2.png" alt="Logotipo UEB"></a>
         <div class="text-container">
             
             <div class="top-text">OPCIONES PARA EL</div>
