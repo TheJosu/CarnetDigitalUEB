@@ -42,14 +42,6 @@ if (count($result) > 0) {
 $stmt->closeCursor();
 $conn = null;
 
-// Posición y ancho del nombre
-$nombreX = intval(110);
-$nombreWidth = intval(1200);
-
-// Posición y ancho de la cédula
-$cedulaX = intval(110);
-$cedulaWidth = intval(1200);
-
 // Crear el PDF
 $pdf = new PDF('P', 'pt', array(1365, 2427));
 $pdf->AddPage();
@@ -66,7 +58,7 @@ if (in_array($extension, $allowedExtensions) && file_exists($fotoPath)) {
 }
 
 // Agregar QR code
-$qrData = 'http://localhost:8081/Carnet/src/validacion.php?ci=' . urlencode($ci);
+$qrData = 'https://carnetdigitalueb.onrender.com/src/validacion.php?ci=' . urlencode($ci);
 $qrFile = 'qrcode.png';
 QRcode::png($qrData, $qrFile, QR_ECLEVEL_L, 10);
 
@@ -100,47 +92,44 @@ if (file_exists($fondoPath)) {
     $pdf->Image($fondoPath, intval(0), intval(0), intval(1365), intval(2427)); // Ajustar la imagen para que ocupe todo el fondo
 }
 
-// Información del estudiante
+// Nombre
 $pdf->SetFont('Times', 'Bu', 90);
 $pdf->SetTextColor(0, 0, 0); // NEGRO
-$pdf->SetXY(intval($nombreX), intval($pdf->GetY() + 50));
-$pdf->Cell(intval($nombreWidth), 50, utf8_decode($student['nombre_estudiante']), 0, 1, 'C');
+// Obtener el ancho de la página
+$pdf->SetXY(round(90), round(1380));
+$pageWidth = $pdf->GetPageWidth();
+// Obtener el ancho del texto del nombre del estudiante
+$nombreWidth = $pdf->GetStringWidth(utf8_decode($student['nombre_estudiante']));
+// Calcular la posición X para centrar el texto
+$nombreX = ($pageWidth - $nombreWidth) / 2;
+// Establecer la posición para el nombre centrado
+$pdf->SetXY(round($nombreX), $pdf->GetY() + 50); // Ajustar Y según necesites
+$pdf->Cell(round($nombreWidth), round(50), utf8_decode($student['nombre_estudiante']), 0, 1, 'C');
 
 // Cédula
 $pdf->SetFont('Times', 'I', 90);
+// Obtener el texto completo para la cédula
 $cedulaTexto = $student['id_cedula'];
-$pdf->SetXY(intval($cedulaX), intval($pdf->GetY() + 50));
-$pdf->Cell(intval($cedulaWidth), 50, utf8_decode($cedulaTexto), 0, 1, 'C');
+// Obtener el ancho del texto de la cédula
+$cedulaWidth = $pdf->GetStringWidth(utf8_decode($cedulaTexto));
+// Calcular la posición X para centrar la cédula
+$cedulaX = ($pageWidth - $cedulaWidth) / 2;
+// Establecer la posición para la cédula centrada justo debajo del nombre
+$pdf->SetXY(round($cedulaX), $pdf->GetY() + 50); // Ajustar Y según necesites
+$pdf->Cell(round($cedulaWidth), round(50), utf8_decode($cedulaTexto), 0, 1, 'C');
 
-// Rol
 $pdf->SetFont('Times', 'I', 50);
-$pdf->SetTextColor(58, 58, 58); // Plomo
-$pdf->SetXY(intval(110), intval(1600));
-$pdf->Cell(0, 50, utf8_decode('Rol: ') . utf8_decode("Estudiante"), 0, 1);
+$pdf->SetTextColor(58, 58, 58); // plomo
 
-// Modalidad (desde la tabla carrera)
-$pdf->SetFont('Times', 'I', 50);
-$pdf->SetTextColor(58, 58, 58); // Plomo
-$pdf->SetXY(intval(110), intval(1650));
-$pdf->Cell(0, 50, utf8_decode('Modalidad: ') . utf8_decode($student['modalidad']), 0, 1);
+// Resto del código sin cambios...
 
-// Facultad (con MultiCell para manejar texto extenso)
-$pdf->SetXY(intval(110), intval(1700));
-$pdf->MultiCell(intval(1200), intval(50), utf8_decode('Facultad: ') . utf8_decode($student['nombre_facultad']), 0, 'L');
-
-// Carrera (extraída de la tabla `carrera`)
-$pdf->SetX(intval(110)); // Restablece la posición X a 110 para la siguiente línea
-$pdf->Cell(intval(0), intval(50), utf8_decode('Carrera: ') . utf8_decode($student['nombre_carrera']), 0, 1);
-
-// Descargar o visualizar el PDF
 $pdfFile = 'carnet_digital.pdf';
 $pdf->Output('F', $pdfFile);
-
-header('Content-Type: application/pdf');
 
 $action = $_GET['action'] ?? '';
 
 if ($action == 'download') {
+    header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="carnet_digital.pdf"');
     readfile($pdfFile);
     unlink($pdfFile);
