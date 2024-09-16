@@ -26,9 +26,9 @@ $sql = "SELECT e.id_cedula, e.fotografia, e.nombre_estudiante, c.modalidad, f.no
         JOIN matricula m ON e.id_cedula = m.id_cedula
         JOIN carrera c ON m.id_carrera = c.id_carrera
         JOIN facultad f ON c.id_facultad = f.id_facultad
-        WHERE e.id_cedula = ?";
+        WHERE e.id_cedula = :ci";
 $stmt = $conn->prepare($sql);
-$stmt->bindValue(1, $ci, PDO::PARAM_STR);
+$stmt->bindValue(':ci', $ci, PDO::PARAM_STR);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -41,6 +41,14 @@ if (count($result) > 0) {
 // Cerrar conexión
 $stmt->closeCursor();
 $conn = null;
+
+// Posición y ancho del nombre
+$nombreX = intval(110);
+$nombreWidth = intval(1200);
+
+// Posición y ancho de la cédula
+$cedulaX = intval(110);
+$cedulaWidth = intval(1200);
 
 // Crear el PDF
 $pdf = new PDF('P', 'pt', array(1365, 2427));
@@ -128,15 +136,16 @@ $pdf->Cell(intval(0), intval(50), utf8_decode('Carrera: ') . utf8_decode($studen
 $pdfFile = 'carnet_digital.pdf';
 $pdf->Output('F', $pdfFile);
 
+header('Content-Type: application/pdf');
+
 $action = $_GET['action'] ?? '';
 
 if ($action == 'download') {
-    header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="carnet_digital.pdf"');
     readfile($pdfFile);
     unlink($pdfFile);
     exit();
-} else if ($action == 'view') {
+} elseif ($action == 'view') {
     header('Content-Type: application/pdf');
     readfile($pdfFile);
     unlink($pdfFile);
