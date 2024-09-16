@@ -1,10 +1,13 @@
 <?php
-$ci = filter_var($_GET['ci'], FILTER_SANITIZE_STRING); // Sanitizar el parámetro GET
+$ci = htmlspecialchars($_GET['ci'], ENT_QUOTES, 'UTF-8'); // Sanitizar el parámetro GET
 
 include 'config/database.php';
 
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+try {
+    $conn = new PDO($dsn, $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Conexión fallida: " . $e->getMessage());
 }
 
 // Consulta SQL corregida
@@ -17,13 +20,11 @@ $sql = "SELECT e.*, c.nombre_carrera, c.modalidad, f.nombre_facultad, cl.nombre_
         JOIN periodo p ON m.id_periodo = p.id_periodo
         WHERE e.id_cedula = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $ci);
+$stmt->bindParam(1, $ci, PDO::PARAM_STR);
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($result->num_rows > 0) {
-    $student = $result->fetch_assoc();
-    
+if ($result) {
     // Función para obtener el nombre del mes en español
     function getMesEnEspanol($mes) {
         $meses = array(
@@ -34,14 +35,14 @@ if ($result->num_rows > 0) {
     }
 
     // Formatear el periodo académico en español
-    $fecha_inicio = new DateTime($student['fecha_inicio']);
-    $fecha_fin = new DateTime($student['fecha_fin']);
+    $fecha_inicio = new DateTime($result['fecha_inicio']);
+    $fecha_fin = new DateTime($result['fecha_fin']);
     $mes_inicio = getMesEnEspanol($fecha_inicio->format('n')); // 'n' da el mes sin ceros a la izquierda
     $mes_fin = getMesEnEspanol($fecha_fin->format('n'));
     $periodo_academico = $mes_inicio . " " . $fecha_inicio->format('Y') . " - " . $mes_fin . " " . $fecha_fin->format('Y');
     
     // Obtener el nombre de la fotografía desde la base de datos
-    $fotografia = $student['fotografia'];
+    $fotografia = $result['fotografia'];
 
     if (!empty($fotografia)) {
         $fotoPath = 'uploads/' . $fotografia; // Ruta completa a la imagen
@@ -56,8 +57,8 @@ if ($result->num_rows > 0) {
     exit;
 }
 
-$stmt->close();
-$conn->close();
+$stmt = null;
+$conn = null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -92,15 +93,15 @@ $conn->close();
 
             <!-- Información del estudiante -->
             <div style="flex: 1;">
-                <p>Nombre: <?php echo htmlspecialchars($student['nombre_estudiante']); ?></p>
-                <p>Cédula: <?php echo htmlspecialchars($student['id_cedula']); ?></p>
+                <p>Nombre: <?php echo htmlspecialchars($result['nombre_estudiante']); ?></p>
+                <p>Cédula: <?php echo htmlspecialchars($result['id_cedula']); ?></p>
                 <p>Rol: Estudiante</p> <!-- Rol siempre será "Estudiante" -->
-                <p>Celular: <?php echo htmlspecialchars($student['celular']); ?></p>
-                <p>Correo: <?php echo htmlspecialchars($student['correo_institucional']); ?></p>
-                <p>Modalidad: <?php echo htmlspecialchars($student['modalidad']); ?></p>
-                <p>Facultad: <?php echo htmlspecialchars($student['nombre_facultad']); ?></p>
-                <p>Carrera: <?php echo htmlspecialchars($student['nombre_carrera']); ?></p>
-                <p>Ciclo: <?php echo htmlspecialchars($student['nombre_ciclo']); ?></p>
+                <p>Celular: <?php echo htmlspecialchars($result['celular']); ?></p>
+                <p>Correo: <?php echo htmlspecialchars($result['correo_institucional']); ?></p>
+                <p>Modalidad: <?php echo htmlspecialchars($result['modalidad']); ?></p>
+                <p>Facultad: <?php echo htmlspecialchars($result['nombre_facultad']); ?></p>
+                <p>Carrera: <?php echo htmlspecialchars($result['nombre_carrera']); ?></p>
+                <p>Ciclo: <?php echo htmlspecialchars($result['nombre_ciclo']); ?></p>
                 <p>Periodo Académico: <?php echo htmlspecialchars($periodo_academico); ?></p>
             </div>
         </div>
