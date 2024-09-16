@@ -44,8 +44,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $result = $conn->query($sql);
+
+    // Desconectar la base de datos estableciendo la conexión a null
+    $conn = null;  // Esto destruye el objeto PDO y cierra la conexión
 }
-$conn->close();
+
 ?>
 
 <!DOCTYPE html>
