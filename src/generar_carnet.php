@@ -12,8 +12,13 @@ class PDF extends FPDF {
 $ci = $_GET['ci']; // Cédula de identidad del estudiante
 include 'config/database.php';
 
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+// Conectar a la base de datos usando PDO
+try {
+    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    // Configura el modo de error de PDO para que lance excepciones
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Conexión fallida: " . $e->getMessage());
 }
 
 // Consulta para obtener datos del estudiante, la facultad y la modalidad desde la tabla carrera
@@ -22,19 +27,15 @@ $sql = "SELECT e.id_cedula, e.fotografia, e.nombre_estudiante, c.modalidad, f.no
         JOIN matricula m ON e.id_cedula = m.id_cedula
         JOIN carrera c ON m.id_carrera = c.id_carrera
         JOIN facultad f ON c.id_facultad = f.id_facultad
-        WHERE e.id_cedula = ?";
+        WHERE e.id_cedula = :ci";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $ci);
+$stmt->bindValue(':ci', $ci, PDO::PARAM_STR);
 $stmt->execute();
-$result = $stmt->get_result();
+$student = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($result->num_rows > 0) {
-    $student = $result->fetch_assoc();
-} else {
+if (!$student) {
     die("Estudiante no encontrado.");
 }
-$stmt->close();
-$conn->close();
 
 // Crear el PDF
 $pdf = new PDF('P', 'pt', array(1365, 2427)); // Dimensiones en puntos (pt)
