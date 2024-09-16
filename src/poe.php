@@ -86,56 +86,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="content-container">
         <!-- Filtros -->
         <div class="filter-container">
-            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-                <label for="id_cedula">Número de Cédula:</label>
-                <input type="text" id="id_cedula" name="id_cedula">
-                
-                <label for="id_carrera">Carrera:</label>
-                <select id="id_carrera" name="id_carrera">
-                    <option value="">Seleccione una carrera</option>
-                    <?php
-                    foreach ($result_carreras as $row) {
-                        echo "<option value='" . htmlspecialchars($row["id_carrera"]) . "'>" . htmlspecialchars($row["nombre_carrera"]) . "</option>";
-                    }
-                    ?>
-                </select>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] ?? '');?>"> <!-- Cambio aquí -->
+            <label for="id_cedula">Número de Cédula:</label>
+            <input type="text" id="id_cedula" name="id_cedula">
+            
+            <label for="id_carrera">Carrera:</label>
+            <select id="id_carrera" name="id_carrera">
+                <option value="">Seleccione una carrera</option>
+                <?php
+                foreach ($result_carreras as $row) {
+                    echo "<option value='" . htmlspecialchars($row["id_carrera"] ?? '') . "'>" . htmlspecialchars($row["nombre_carrera"] ?? '') . "</option>";
+                }
+                ?>
+            </select>
 
-                <label for="id_ciclo">Ciclo:</label>
-                <select id="id_ciclo" name="id_ciclo">
-                    <option value="">Seleccione un ciclo</option>
-                    <?php
-                    foreach ($result_ciclos as $row) {
-                        echo "<option value='" . htmlspecialchars($row["id_ciclo"]) . "'>" . htmlspecialchars($row["nombre_ciclo"]) . "</option>";
-                    }
-                    ?>
-                </select>
+            <label for="id_ciclo">Ciclo:</label>
+            <select id="id_ciclo" name="id_ciclo">
+                <option value="">Seleccione un ciclo</option>
+                <?php
+                foreach ($result_ciclos as $row) {
+                    echo "<option value='" . htmlspecialchars($row["id_ciclo"] ?? '') . "'>" . htmlspecialchars($row["nombre_ciclo"] ?? '') . "</option>";
+                }
+                ?>
+            </select>
 
-                <input type="submit" value="Filtrar">
-            </form>
+            <input type="submit" value="Filtrar">
+        </form>
+
         </div>
 
         <!-- Resultados -->
         <div class="results-container">
             <?php
-            if (isset($result)) {
-                if (!empty($result)) {  // Verifica si hay resultados
-                    echo "<table>";
-                    echo "<tr><th># Cédula</th><th>Nombre</th><th>Correo Institucional</th><th>Carrera</th><th>Ciclo</th><th>Acción</th></tr>";
-                    foreach ($result as $row) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($row["id_cedula"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($row["nombre_estudiante"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($row["correo_institucional"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($row["nombre_carrera"]) . "</td>";
-                        echo "<td>" . htmlspecialchars($row["nombre_ciclo"]) . "</td>";
-                        echo "<td><a href='editar_alumno.php?id=" . htmlspecialchars($row["id_cedula"]) . "' target='_blank'>Editar</a></td>";
-                        echo "</tr>";
+                if (isset($result)) {
+                    if (!empty($result)) {  // Verifica si hay resultados
+                        echo "<table>";
+                        echo "<tr><th># Cédula</th><th>Nombre</th><th>Correo Institucional</th><th>Carrera</th><th>Ciclo</th><th>Acción</th></tr>";
+                        foreach ($result as $row) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row["id_cedula"] ?? '') . "</td>";
+                            echo "<td>" . htmlspecialchars($row["nombre_estudiante"] ?? '') . "</td>";
+                            echo "<td>" . htmlspecialchars($row["correo_institucional"] ?? '') . "</td>";
+                            echo "<td>" . htmlspecialchars($row["nombre_carrera"] ?? '') . "</td>";
+                            echo "<td>" . htmlspecialchars($row["nombre_ciclo"] ?? '') . "</td>";
+                            echo "<td><a href='editar_alumno.php?id=" . htmlspecialchars($row["id_cedula"] ?? '') . "' target='_blank'>Editar</a></td>";
+                            echo "</tr>";
+                        }
+                        echo "</table>";
+                    } else {
+                        echo "No se encontraron alumnos.";
                     }
-                    echo "</table>";
-                } else {
-                    echo "No se encontraron alumnos.";
                 }
-            }
             ?>
         </div>
     </div>
