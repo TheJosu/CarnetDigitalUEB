@@ -4,19 +4,23 @@ require 'vendor/phpqrcode/qrlib.php';
 
 class PDF extends FPDF {
     function Header() {
-        // Aquí se puede agregar un encabezado personalizado
+        // Encabezado personalizado (si es necesario)
     }
 }
 
-// Conectamos a la base de datos y recuperamos los datos del estudiante
-$ci = $_GET['ci']; // Cédula de identidad del estudiante
+// Cédula de identidad del estudiante
+$ci = $_GET['ci'];
+
 include 'config/database.php';
 
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+try {
+    $conn = new PDO("pgsql:host=$host;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Conexión fallida: " . $e->getMessage());
 }
 
-// Consulta para obtener datos del estudiante, la facultad y la modalidad desde la tabla carrera
+// Consulta para obtener datos del estudiante
 $sql = "SELECT e.id_cedula, e.fotografia, e.nombre_estudiante, c.modalidad, f.nombre_facultad, c.nombre_carrera
         FROM estudiante e
         JOIN matricula m ON e.id_cedula = m.id_cedula
@@ -24,17 +28,19 @@ $sql = "SELECT e.id_cedula, e.fotografia, e.nombre_estudiante, c.modalidad, f.no
         JOIN facultad f ON c.id_facultad = f.id_facultad
         WHERE e.id_cedula = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $ci);
+$stmt->bindValue(1, $ci, PDO::PARAM_STR);
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if ($result->num_rows > 0) {
-    $student = $result->fetch_assoc();
+if (count($result) > 0) {
+    $student = $result[0];
 } else {
     die("Estudiante no encontrado.");
 }
-$stmt->close();
-$conn->close();
+
+// Cerrar conexión
+$stmt->closeCursor();
+$conn = null;
 
 // Crear el PDF
 $pdf = new PDF('P', 'pt', array(1365, 2427)); // Dimensiones en puntos (pt)

@@ -4,11 +4,16 @@ require 'vendor/autoload.php'; // Incluir PhpOffice autoload
 use PhpOffice\PhpSpreadsheet\IOFactory;
 session_start(); // Iniciar sesión
 
-// Conectar a la base de datos
+// Conectar a la base de datos usando PDO
 include 'config/database.php';
 
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+try {
+    // Crear la conexión usando PDO
+    $conn = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_password);
+    // Configurar PDO para que lance excepciones en caso de error
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Conexión fallida: " . $e->getMessage());
 }
 
 // Verificar si se ha subido un archivo
@@ -49,7 +54,6 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                 $stmt->execute();
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                // Inicializar $id_carrera y $id_ciclo a null
                 $id_carrera = null;
                 $id_ciclo = null;
 
@@ -61,7 +65,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     if ($result) {
-                        // El estudiante ya está registrado en ambas tablas, continuar al siguiente registro
+                        // El estudiante ya está registrado, continuar
                         continue;
                     } else {
                         // Obtener ID de la carrera
@@ -78,7 +82,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                         $result = $stmt->fetch(PDO::FETCH_ASSOC);
                         $id_ciclo = $result['id_ciclo'] ?? null;
 
-                        // Verificar si ambos, $id_carrera y $id_ciclo, son válidos antes de insertar
+                        // Insertar en la tabla de matrícula si los valores son válidos
                         if ($id_carrera && $id_ciclo) {
                             $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
                             $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
@@ -88,11 +92,11 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
 
                             $new_records_inserted = true;
                         } else {
-                            echo "Error: No se encontró la carrera o el ciclo para el estudiante con cédula " . $id_cedula;
+                            echo "Error: Carrera o ciclo no encontrados para cédula " . $id_cedula;
                         }
                     }
                 } else {
-                    // Insertar el nuevo registro en la tabla de estudiantes
+                    // Insertar en la tabla de estudiantes
                     $stmt = $conn->prepare('INSERT INTO estudiante (nombre_estudiante, id_cedula, fotografia, correo_institucional, celular) VALUES (:nombre_estudiante, :id_cedula, NULL, NULL, NULL)');
                     $stmt->bindValue(':nombre_estudiante', $nombre_estudiante, PDO::PARAM_STR);
                     $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
@@ -112,8 +116,8 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);
                     $id_ciclo = $result['id_ciclo'] ?? null;
 
-                    // Verificar si ambos, $id_carrera y $id_ciclo, son válidos antes de insertar
                     if ($id_carrera && $id_ciclo) {
+                        // Insertar en la tabla de matrícula
                         $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
                         $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                         $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
@@ -122,7 +126,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
 
                         $new_records_inserted = true;
                     } else {
-                        echo "Error: No se encontró la carrera o el ciclo para el estudiante con cédula " . $id_cedula;
+                        echo "Error: Carrera o ciclo no encontrados para cédula " . $id_cedula;
                     }
                 }
             }
@@ -136,7 +140,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                     header('Location: poe.php');
                     exit();
                 } else {
-                    header('Location: formulario-masivo.php'); // Redirigir a la página de inicio
+                    header('Location: formulario-masivo.php');
                     exit();
                 }
             } else {
@@ -152,5 +156,6 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
     echo "No se ha subido ningún archivo o ha ocurrido un error.";
 }
 
-$conn->close();
+// Cerrar la conexión
+$conn = null;
 ?>
