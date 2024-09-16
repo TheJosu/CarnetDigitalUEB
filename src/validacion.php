@@ -1,11 +1,14 @@
 <?php
-$ci = htmlspecialchars($_GET['ci'], ENT_QUOTES, 'UTF-8'); // Sanitizar el parámetro GET
+// Sanitizar el parámetro GET
+$ci = htmlspecialchars($_GET['ci'], ENT_QUOTES, 'UTF-8');
 
+// Incluir el archivo de configuración de base de datos
 include 'config/database.php';
 
 try {
-    $conn = new PDO($dsn, $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Conexión ya realizada en database.php, no es necesario crearla nuevamente
+    // $conn = new PDO("pgsql:host=$host;dbname=$dbname", $username, $password);
+    // $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Conexión fallida: " . $e->getMessage());
 }
@@ -18,9 +21,9 @@ $sql = "SELECT e.*, c.nombre_carrera, c.modalidad, f.nombre_facultad, cl.nombre_
         JOIN facultad f ON c.id_facultad = f.id_facultad
         JOIN ciclo cl ON m.id_ciclo = cl.id_ciclo
         JOIN periodo p ON m.id_periodo = p.id_periodo
-        WHERE e.id_cedula = ?";
+        WHERE e.id_cedula = :ci";
 $stmt = $conn->prepare($sql);
-$stmt->bindParam(1, $ci, PDO::PARAM_STR);
+$stmt->bindParam(':ci', $ci, PDO::PARAM_STR);
 $stmt->execute();
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
