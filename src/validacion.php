@@ -70,6 +70,7 @@ $conn = null;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validación del Carnet Digital</title>
     <link rel="stylesheet" href="../public/css/validacionueb.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Agregar el logotipo de la UEB -->
@@ -96,16 +97,16 @@ $conn = null;
 
             <!-- Información del estudiante -->
             <div style="flex: 1;">
-                <p>Nombre: <?php echo htmlspecialchars($result['nombre_estudiante']); ?></p>
-                <p>Cédula: <?php echo htmlspecialchars($result['id_cedula']); ?></p>
-                <p>Rol: Estudiante</p> <!-- Rol siempre será "Estudiante" -->
-                <p>Celular: <?php echo htmlspecialchars($result['celular']); ?></p>
-                <p>Correo: <?php echo htmlspecialchars($result['correo_institucional']); ?></p>
-                <p>Modalidad: <?php echo htmlspecialchars($result['modalidad']); ?></p>
-                <p>Facultad: <?php echo htmlspecialchars($result['nombre_facultad']); ?></p>
-                <p>Carrera: <?php echo htmlspecialchars($result['nombre_carrera']); ?></p>
-                <p>Ciclo: <?php echo htmlspecialchars($result['nombre_ciclo']); ?></p>
-                <p>Periodo Académico: <?php echo htmlspecialchars($periodo_academico); ?></p>
+                <p><i class="fas fa-user" style="color: #e80a0a;"></i> Nombre: <?php echo htmlspecialchars($result['nombre_estudiante']); ?></p>
+                <p><i class="fas fa-id-card" style="color: #e80a0a;"></i> Cédula: <?php echo htmlspecialchars($result['id_cedula']); ?></p>
+                <p><i class="fas fa-user-tie" style="color: #e80a0a;"></i> Rol: Estudiante</p> <!-- Rol siempre será "Estudiante" -->
+                <p><i class="fas fa-phone" style="color: #e80a0a;"></i> Celular: <?php echo htmlspecialchars($result['celular']); ?></p>
+                <p><i class="fas fa-envelope" style="color: #e80a0a;"></i> Correo: <?php echo htmlspecialchars($result['correo_institucional']); ?></p>
+                <p><i class="fas fa-graduation-cap" style="color: #0b283f;"></i> Modalidad: <?php echo htmlspecialchars($result['modalidad']); ?></p>
+                <p><i class="fas fa-university" style="color: #0b283f;"></i> Facultad: <?php echo htmlspecialchars($result['nombre_facultad']); ?></p>
+                <p><i class="fas fa-school" style="color: #0b283f;"></i> Carrera: <?php echo htmlspecialchars($result['nombre_carrera']); ?></p>
+                <p><i class="fas fa-calendar-alt" style="color: #0b283f;"></i> Ciclo: <?php echo htmlspecialchars($result['nombre_ciclo']); ?></p>
+                <p><i class="fas fa-calendar-week" style="color: #0b283f;"></i> Periodo Académico: <?php echo htmlspecialchars($periodo_academico); ?></p>
             </div>
         </div>
     </div>
