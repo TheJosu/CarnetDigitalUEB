@@ -33,7 +33,7 @@ body {
 }
 
 .text-container .bottom-text {
-    color: #0b283f; /* Color del texto en rojo */
+    color: #e80a0a; /* Color del texto en rojo */
     font-size: 1.5em; /* Ajusta el tamaño según sea necesario */
 }
 
@@ -73,7 +73,7 @@ body {
 
 .nav-menu a {
     text-decoration: none;
-    color: #e80a0a;
+    color: #0b283f;
     font-size: 1.2em;
     font-weight: bold;
     display: flex;
