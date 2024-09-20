@@ -27,7 +27,7 @@
             <form action="procesar.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="tipo" value="estudiante">
                 <div class="form-group">
-                    <label for="id_cedula">ID de Cédula:</label>
+                    <label for="id_cedula">Cédula:</label>
                     <input type="number" id="id_cedula" name="id_cedula" required>
                 </div>
                 <div class="form-group">
@@ -35,7 +35,7 @@
                     <input type="file" name="fotografia" accept="image/*">
                 </div>
                 <div class="form-group">
-                    <label for="nombre_estudiante">Nombre:</label>
+                    <label for="nombre_estudiante">Nombre completo:</label>
                     <input type="text" id="nombre_estudiante" name="nombre_estudiante" required>
                 </div>
                 <div class="form-group">
