@@ -39,6 +39,12 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
 
             foreach ($sheet->getRowIterator(2) as $row) {
                 $id_cedula = $sheet->getCell('AQ' . $row->getRowIndex())->getValue();
+
+                // Verificar si la cédula tiene 10 dígitos, si no, agregar el 0 al inicio
+                if (strlen($id_cedula) < 10) {
+                    $id_cedula = str_pad($id_cedula, 10, '0', STR_PAD_LEFT);
+                }
+
                 $primer_apellido = $sheet->getCell('AR' . $row->getRowIndex())->getValue();
                 $segundo_apellido = $sheet->getCell('AS' . $row->getRowIndex())->getValue();
                 $nombres = $sheet->getCell('AT' . $row->getRowIndex())->getValue();
@@ -48,7 +54,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                 $nombre_estudiante = trim($primer_apellido) . ' ' . trim($segundo_apellido) . ' ' . trim($nombres);
 
                 // Verificar si el estudiante está registrado en la tabla de estudiantes
-                $stmt = $conn->prepare('SELECT id_cedula FROM estudiante WHERE id_cedula = :id_cedula');
+                $stmt = $conn->prepare('SELECT id_cedula FROM estudiante WHERE id_cedula = LPAD(:id_cedula, 10, "0")');
                 $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                 $stmt->execute();
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -58,7 +64,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
 
                 if ($result) {
                     // Verificar si el estudiante está registrado en la tabla de matrícula
-                    $stmt = $conn->prepare('SELECT id_matricula FROM matricula WHERE id_cedula = :id_cedula');
+                    $stmt = $conn->prepare('SELECT id_matricula FROM matricula WHERE id_cedula = LPAD(:id_cedula, 10, "0")');
                     $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                     $stmt->execute();
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -83,7 +89,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
 
                         // Insertar en la tabla de matrícula si los valores son válidos
                         if ($id_carrera && $id_ciclo) {
-                            $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
+                            $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (LPAD(:id_cedula, 10, "0"), :id_carrera, :id_ciclo, 1)');
                             $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                             $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
                             $stmt->bindValue(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
@@ -96,7 +102,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
                     }
                 } else {
                     // Insertar en la tabla de estudiantes
-                    $stmt = $conn->prepare('INSERT INTO estudiante (nombre_estudiante, id_cedula, fotografia, correo_institucional, celular) VALUES (:nombre_estudiante, :id_cedula, NULL, NULL, NULL)');
+                    $stmt = $conn->prepare('INSERT INTO estudiante (nombre_estudiante, id_cedula, fotografia, correo_institucional, celular) VALUES (:nombre_estudiante, LPAD(:id_cedula, 10, "0"), NULL, NULL, NULL)');
                     $stmt->bindValue(':nombre_estudiante', $nombre_estudiante, PDO::PARAM_STR);
                     $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                     $stmt->execute();
@@ -117,7 +123,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
 
                     if ($id_carrera && $id_ciclo) {
                         // Insertar en la tabla de matrícula
-                        $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (:id_cedula, :id_carrera, :id_ciclo, 1)');
+                        $stmt = $conn->prepare('INSERT INTO matricula (id_cedula, id_carrera, id_ciclo, id_periodo) VALUES (LPAD(:id_cedula, 10, "0"), :id_carrera, :id_ciclo, 1)');
                         $stmt->bindValue(':id_cedula', $id_cedula, PDO::PARAM_STR);
                         $stmt->bindValue(':id_carrera', $id_carrera, PDO::PARAM_INT);
                         $stmt->bindValue(':id_ciclo', $id_ciclo, PDO::PARAM_INT);
