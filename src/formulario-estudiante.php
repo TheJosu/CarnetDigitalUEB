@@ -22,13 +22,13 @@
 
     <div class="container">
        <!-- Formulario para Estudiante -->
-       <div id="form-estudiante" class="form-container">
+        <div id="form-estudiante" class="form-container">
             <h2>Agregar Estudiante</h2>
             <form action="procesar.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="tipo" value="estudiante">
                 <div class="form-group">
                     <label for="id_cedula">Cédula:</label>
-                    <input type="number" id="id_cedula" name="id_cedula" required>
+                    <input type="text" id="id_cedula" name="id_cedula" required pattern="^\d{10}$" title="La cédula debe tener exactamente 10 dígitos">
                 </div>
                 <div class="form-group">
                     <label for="fotografia">Fotografía:</label>
@@ -40,15 +40,16 @@
                 </div>
                 <div class="form-group">
                     <label for="celular">Celular:</label>
-                    <input type="text" id="celular" name="celular">
+                    <input type="text" id="celular" name="celular" required pattern="^\d{10}$" title="El celular debe tener exactamente 10 dígitos">
                 </div>
                 <div class="form-group">
                     <label for="correo_institucional">Correo Institucional:</label>
-                    <input type="email" id="correo_institucional" name="correo_institucional">
+                    <input type="email" id="correo_institucional" name="correo_institucional" required title="Ingrese un correo institucional válido">
                 </div>
                 <button type="submit" class="submit-btn">Agregar Estudiante</button>
             </form>
         </div>
+
 
 
     </div>
