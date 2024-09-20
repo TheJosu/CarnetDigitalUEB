@@ -10,15 +10,15 @@ try {
 }
 
 // Obtener los datos del alumno a editar
-$id_estudiante = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$id_estudiante = isset($_GET['id']) ? str_pad($_GET['id'], 10, '0', STR_PAD_LEFT) : '0';
 
-if ($id_estudiante > 0) {
+if ($id_estudiante != '0') {
     $sql = "SELECT id_cedula, fotografia, nombre_estudiante, celular, correo_institucional 
             FROM estudiante 
-            WHERE id_cedula = :id_estudiante";
+            WHERE id_cedula = LPAD(:id_estudiante, 10, '0')";
     
     $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':id_estudiante', $id_estudiante, PDO::PARAM_INT);
+    $stmt->bindValue(':id_estudiante', $id_estudiante, PDO::PARAM_STR);
     $stmt->execute();
     
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -57,14 +57,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Actualizar los datos del alumno
     $sql = "UPDATE estudiante 
             SET fotografia = :fotoPath, nombre_estudiante = :nombre, celular = :telefono, correo_institucional = :correo
-            WHERE id_cedula = :id_estudiante";
+            WHERE id_cedula = LPAD(:id_estudiante, 10, '0')";
 
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':fotoPath', $fotoPath, PDO::PARAM_STR);
     $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
     $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
     $stmt->bindValue(':correo', $correo, PDO::PARAM_STR);
-    $stmt->bindValue(':id_estudiante', $id_estudiante, PDO::PARAM_INT);
+    $stmt->bindValue(':id_estudiante', $id_estudiante, PDO::PARAM_STR);
 
     if ($stmt->execute()) {
         header('Location: poe.php');
