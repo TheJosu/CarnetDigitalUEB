@@ -103,9 +103,9 @@ $conn = null;  // Cerrar la conexión
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($row["nombre_estudiante"] ?? ''); ?>"><br><br>
             <label for="telefono">Teléfono:</label>
-            <input type="text" id="telefono" name="telefono" value="<?php echo htmlspecialchars($row["celular"] ?? ''); ?>"><br><br>
+            <input type="text" id="telefono" name="telefono" pattern="^\d{10}$" title="El celular debe tener exactamente 10 dígitos" value="<?php echo htmlspecialchars($row["celular"] ?? ''); ?>"><br><br>
             <label for="correo">Correo:</label>
-            <input type="email" id="correo" name="correo" value="<?php echo htmlspecialchars($row["correo_institucional"] ?? ''); ?>"><br><br>
+            <input type="email" id="correo" name="correo" title="Ingrese un correo institucional válido" value="<?php echo htmlspecialchars($row["correo_institucional"] ?? ''); ?>"><br><br>
             <input type="submit" value="Guardar Cambios">
         </form>
     </div>

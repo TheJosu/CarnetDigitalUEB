@@ -9,13 +9,16 @@ try {
         // Validar y escapar entrada
         $ci = htmlspecialchars($ci);
 
+        // Verificar si el número de cédula es la de la secretaria
+        if ($ci == '1751611292') {
+            header("Location: principal.php");
+            exit();
+        }
+
         // Consultar si la cédula existe
         $sql = "SELECT * FROM estudiante WHERE id_cedula = :ci";
         $stmt = $conn->prepare($sql);
-        
-        // Cambiar tipo de dato según corresponda: INT si es número, STR si es cadena
-        $stmt->bindParam(':ci', $ci, PDO::PARAM_STR);  // Cambia a PDO::PARAM_INT si es numérico
-
+        $stmt->bindParam(':ci', $ci, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

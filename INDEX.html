@@ -59,7 +59,7 @@
           <div class="form">
             <form action="src/login.php" method="post">
                 <label for="password">INGRESE SU NUMERO CEDULA</label>
-                <input type="text" name="CI"  required>
+                <input type="text" name="CI" pattern="^\d{10}$" title="La cédula debe tener exactamente 10 dígitos" required>
                 <button type="submit" name="action" value="Ingresar">Ingresar</button>
             </form>
           </div>
