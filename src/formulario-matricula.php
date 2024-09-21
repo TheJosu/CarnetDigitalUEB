@@ -28,7 +28,7 @@
                 <input type="hidden" name="tipo" value="matricula">
                 <div class="form-group">
                     <label for="id_cedula">CI del Estudiante:</label>
-                    <input type="number" id="id_cedula" name="id_cedula" required>
+                    <input type="number" id="id_cedula" name="id_cedula" pattern="^\d{10}$" title="La cédula debe tener exactamente 10 dígitos" required>
                 </div>
                 <div class="form-group">
                     <label for="id_carrera">Carrera:</label>
