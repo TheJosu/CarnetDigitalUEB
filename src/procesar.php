@@ -63,17 +63,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fotoPath = '';
 
         if ($fotografia) {
-            $target_dir = "uploads/";
-            $fotografia = uniqid() . "_" . basename($fotografia);
-            $target_file = $target_dir . $fotografia;
-    
+            $target_dir = "uploads/";  // Define la carpeta donde se guardará el archivo.
+            $target_file = $target_dir . basename($fotografia);  // Usa el nombre original del archivo.
+        
+            // Mover el archivo subido desde su ubicación temporal a la carpeta final.
             if (move_uploaded_file($_FILES['fotografia']['tmp_name'], $target_file)) {
-                $fotoPath = $fotografia;
+                $fotoPath = basename($fotografia);  // Guarda el nombre del archivo en $fotoPath.
             } else {
-                echo "Error al mover el archivo.";
-                exit();
+                echo "Error al mover el archivo.";  // Mensaje de error en caso de fallo.
+                exit();  // Detiene la ejecución si ocurre un error.
             }
         }
+        
 
         $sql = "INSERT INTO estudiante (id_cedula, nombre_estudiante, celular, correo_institucional, fotografia) 
                 VALUES (:id_cedula, :nombre_estudiante, :celular, :correo_institucional, :fotografia)";
