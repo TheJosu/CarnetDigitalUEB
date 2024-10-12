@@ -59,24 +59,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $correo_institucional = $_POST['correo_institucional'];
 
        // Procesamiento de la fotografía
-        $fotografia = $_FILES['fotografia']['name'];
-        $fotoPath = '';
+       $fotografia = $_FILES['fotografia']['name'];
 
-        if ($fotografia) {
-            $extension = pathinfo($fotografia, PATHINFO_EXTENSION);
-            $nombreArchivo = date('YmdHis') . '.' . $extension;
-            
-            $target_dir = "uploads/";  // Define la carpeta donde se guardará el archivo.
-            $target_file = $target_dir . $nombreArchivo;  // Construye la ruta final del archivo.
-        
-            // Mover el archivo subido desde su ubicación temporal a la carpeta final.
-            if (move_uploaded_file($_FILES['fotografia']['tmp_name'], $target_file)) {
-                $fotoPath = $nombreArchivo;  // Guarda el nombre del archivo en $fotoPath.
-            } else {
-                echo "Error al mover el archivo.";  // Mensaje de error en caso de fallo.
-                exit();  // Detiene la ejecución si ocurre un error.
-            }
-        }
+       if ($fotografia) {
+           $extension = pathinfo($fotografia, PATHINFO_EXTENSION);
+           $nombreArchivo = $_POST['id_cedula'] . '.' . $extension;
+           
+           $target_dir = "uploads/";  // Define la carpeta donde se guardará el archivo.
+           $target_file = $target_dir . $nombreArchivo;  // Construye la ruta final del archivo.
+       
+           // Mover el archivo subido desde su ubicación temporal a la carpeta final.
+           if (move_uploaded_file($_FILES['fotografia']['tmp_name'], $target_file)) {
+               $fotoPath = $nombreArchivo;  // Guarda el nombre del archivo en $fotoPath.
+           } else {
+               echo "Error al mover el archivo.";  // Mensaje de error en caso de fallo.
+               exit();  // Detiene la ejecución si ocurre un error.
+           }
+       }
 
         $sql = "INSERT INTO estudiante (id_cedula, nombre_estudiante, celular, correo_institucional, fotografia) 
         VALUES (:id_cedula, :nombre_estudiante, :celular, :correo_institucional, :fotografia)";
