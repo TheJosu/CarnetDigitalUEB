@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($fotografia) {
             $fotografia = basename($fotografia);  // Asegura que solo tenga el nombre base.
+            $fotografia = preg_replace('/^[^_]*_/', '', $fotografia);  // Elimina todo antes del primer "_".
             
             $target_dir = "uploads/";  // Define la carpeta donde se guardará el archivo.
             $target_file = $target_dir . $fotografia;  // Construye la ruta final del archivo.
