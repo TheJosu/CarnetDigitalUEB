@@ -65,16 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($fotografia) {
             $fotografia = basename($fotografia);  // Asegura que solo tenga el nombre base.
             
-            // Usar el número de cédula como el nombre del archivo
-            $extension = pathinfo($fotografia, PATHINFO_EXTENSION);
-            $nombreArchivo = $_POST['id_cedula'] . '.' . $extension;
-            
             $target_dir = "uploads/";  // Define la carpeta donde se guardará el archivo.
-            $target_file = $target_dir . $nombreArchivo;  // Construye la ruta final del archivo.
-
+            $target_file = $target_dir . $fotografia;  // Construye la ruta final del archivo.
+        
             // Mover el archivo subido desde su ubicación temporal a la carpeta final.
             if (move_uploaded_file($_FILES['fotografia']['tmp_name'], $target_file)) {
-                $fotoPath = $nombreArchivo;  // Guarda el nombre del archivo en $fotoPath.
+                $fotoPath = $fotografia;  // Guarda el nombre del archivo en $fotoPath.
             } else {
                 echo "Error al mover el archivo.";  // Mensaje de error en caso de fallo.
                 exit();  // Detiene la ejecución si ocurre un error.
