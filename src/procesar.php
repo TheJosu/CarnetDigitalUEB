@@ -63,8 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fotoPath = '';
 
         if ($fotografia) {
-            $extension = pathinfo($fotografia, PATHINFO_EXTENSION);
-            $nombreArchivo = $_POST['id_cedula'] . '.' . $extension;
+            $nombreArchivo = $_POST['id_cedula'] . '.' . pathinfo($fotografia, PATHINFO_EXTENSION);
             
             $target_dir = "uploads/";  // Define la carpeta donde se guardará el archivo.
             $target_file = $target_dir . $nombreArchivo;  // Construye la ruta final del archivo.
@@ -77,8 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();  // Detiene la ejecución si ocurre un error.
             }
         }
-
-        
 
         $sql = "INSERT INTO estudiante (id_cedula, nombre_estudiante, celular, correo_institucional, fotografia) 
         VALUES (:id_cedula, :nombre_estudiante, :celular, :correo_institucional, :fotografia)";
