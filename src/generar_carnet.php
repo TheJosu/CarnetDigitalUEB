@@ -101,24 +101,18 @@ $pageWidth = $pdf->GetPageWidth();
 // Obtener el nombre del estudiante
 $nombreEstudiante = utf8_decode($student['nombre_estudiante']);
 // Ajustar el nombre si es muy largo
-$maxLongitudNombre = 20; // Máxima longitud del nombre por línea
-$nombreLineas = explode(' ', $nombreEstudiante);
-$nombreAjustado = '';
-foreach ($nombreLineas as $parte) {
-    if (strlen($nombreAjustado . ' ' . $parte) > $maxLongitudNombre) {
-        $nombreAjustado .= "\n" . $parte;
-    } else {
-        $nombreAjustado .= ' ' . $parte;
-    }
+$maxLongitudNombre = 30; // Máxima longitud del nombre
+if (strlen($nombreEstudiante) > $maxLongitudNombre) {
+    $nombreEstudiante = substr($nombreEstudiante, 0, $maxLongitudNombre) . "...";
 }
 // Obtener el ancho del texto del nombre del estudiante
-$nombreWidth = $pdf->GetStringWidth($nombreAjustado);
+$nombreWidth = $pdf->GetStringWidth($nombreEstudiante);
 // Calcular la posición X para centrar el texto
 $nombreX = ($pageWidth - $nombreWidth) / 2;
 // Establecer la posición y el tamaño de la fuente para el nombre
 $pdf->SetFontSize(90);
 $pdf->SetXY(round($nombreX), $pdf->GetY() + 50); // Ajustar Y según necesites
-$pdf->MultiCell(round($nombreWidth), round(50), $nombreAjustado, 0, 'C');
+$pdf->Cell(round($nombreWidth), round(50), $nombreEstudiante, 0, 1, 'C');
 
 // Cédula
 $pdf->SetFont('Times', 'I', 90);
