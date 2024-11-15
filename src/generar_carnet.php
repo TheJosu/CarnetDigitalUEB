@@ -98,13 +98,21 @@ $pdf->SetTextColor(0, 0, 0); // NEGRO
 // Obtener el ancho de la página
 $pdf->SetXY(round(90), round(1380));
 $pageWidth = $pdf->GetPageWidth();
+// Obtener el nombre del estudiante
+$nombreEstudiante = utf8_decode($student['nombre_estudiante']);
+// Ajustar el nombre si es muy largo
+$maxLongitudNombre = 30; // Máxima longitud del nombre
+if (strlen($nombreEstudiante) > $maxLongitudNombre) {
+    $nombreEstudiante = substr($nombreEstudiante, 0, $maxLongitudNombre) . "...";
+}
 // Obtener el ancho del texto del nombre del estudiante
-$nombreWidth = $pdf->GetStringWidth(utf8_decode($student['nombre_estudiante']));
+$nombreWidth = $pdf->GetStringWidth($nombreEstudiante);
 // Calcular la posición X para centrar el texto
 $nombreX = ($pageWidth - $nombreWidth) / 2;
-// Establecer la posición para el nombre centrado
+// Establecer la posición y el tamaño de la fuente para el nombre
+$pdf->SetFontSize(90);
 $pdf->SetXY(round($nombreX), $pdf->GetY() + 50); // Ajustar Y según necesites
-$pdf->Cell(round($nombreWidth), round(50), utf8_decode($student['nombre_estudiante']), 0, 1, 'C');
+$pdf->Cell(round($nombreWidth), round(50), $nombreEstudiante, 0, 1, 'C');
 
 // Cédula
 $pdf->SetFont('Times', 'I', 90);
