@@ -93,7 +93,7 @@ if (file_exists($fondoPath)) {
 }
 
 // Nombre
-$pdf->SetFont('Times', 'Bu', 90);
+$pdf->SetFont('Times', 'Bu', 40);
 $pdf->SetTextColor(0, 0, 0); // NEGRO
 // Obtener el ancho de la página
 $pdf->SetXY(round(90), round(1380));
