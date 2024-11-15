@@ -93,7 +93,7 @@ if (file_exists($fondoPath)) {
 }
 
 // Nombre
-$pdf->SetFont('Times', 'Bu', 40);
+$pdf->SetFont('Times', 'Bu', 90);
 $pdf->SetTextColor(0, 0, 0); // NEGRO
 // Obtener el ancho de la página
 $pdf->SetXY(round(90), round(1380));
@@ -110,7 +110,7 @@ $nombreWidth = $pdf->GetStringWidth($nombreEstudiante);
 // Calcular la posición X para centrar el texto
 $nombreX = ($pageWidth - $nombreWidth) / 2;
 // Establecer la posición y el tamaño de la fuente para el nombre
-$pdf->SetFontSize(90);
+$pdf->SetFontSize(50);
 $pdf->SetXY(round($nombreX), $pdf->GetY() + 50); // Ajustar Y según necesites
 $pdf->Cell(round($nombreWidth), round(50), $nombreEstudiante, 0, 1, 'C');
 
