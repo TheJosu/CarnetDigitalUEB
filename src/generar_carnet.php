@@ -101,7 +101,7 @@ $pageWidth = $pdf->GetPageWidth();
 // Obtener el nombre del estudiante
 $nombreEstudiante = utf8_decode($student['nombre_estudiante']);
 // Ajustar el nombre si es muy largo
-$maxLongitudNombre = 30; // Máxima longitud del nombre
+$maxLongitudNombre = 50; // Máxima longitud del nombre
 if (strlen($nombreEstudiante) > $maxLongitudNombre) {
     $nombreEstudiante = substr($nombreEstudiante, 0, $maxLongitudNombre) . "...";
 }
@@ -110,7 +110,7 @@ $nombreWidth = $pdf->GetStringWidth($nombreEstudiante);
 // Calcular la posición X para centrar el texto
 $nombreX = ($pageWidth - $nombreWidth) / 2;
 // Establecer la posición y el tamaño de la fuente para el nombre
-$pdf->SetFontSize(50);
+$pdf->SetFontSize(75);
 $pdf->SetXY(round($nombreX), $pdf->GetY() + 50); // Ajustar Y según necesites
 $pdf->Cell(round($nombreWidth), round(50), $nombreEstudiante, 0, 1, 'C');
 
