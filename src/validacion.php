@@ -75,7 +75,7 @@ $conn = null;
 <body>
     <!-- Agregar el logotipo de la UEB -->
     <div class="header-logo">
-        <a href="../INDEX.html" width="150px";><img src="img/logotipo-ueb2.png" alt="Logotipo UEB"></a>
+        <a href="#" width="150px";><img src="img/logotipo-ueb2.png" alt="Logotipo UEB"></a>
         <div class="text-container">
             <div class="top-text">VALIDACIÓN DE</div>
             <div class="bottom-text">CARNET DIGITAL</div>
