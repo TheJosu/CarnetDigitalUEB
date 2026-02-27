@@ -21,11 +21,17 @@ try {
 }
 
 // Consulta para obtener datos del estudiante
-$sql = "SELECT e.id_cedula, e.fotografia, e.nombre_estudiante, c.modalidad, f.nombre_facultad, c.nombre_carrera
+$sql = "SELECT 
+            e.id_cedula, 
+            e.fotografia, 
+            e.nombre_estudiante, 
+            c.modalidad, 
+            f.nombre_facultad, 
+            c.nombre_carrera
         FROM estudiante e
-        JOIN matricula m ON e.id_cedula = m.id_cedula
-        JOIN carrera c ON m.id_carrera = c.id_carrera
-        JOIN facultad f ON c.id_facultad = f.id_facultad
+        INNER JOIN matricula m ON e.id_cedula = m.id_cedula
+        INNER JOIN carrera c ON m.id_carrera = c.id_carrera
+        INNER JOIN facultad f ON c.id_facultad = f.id_facultad
         WHERE e.id_cedula = :ci";
 $stmt = $conn->prepare($sql);
 $stmt->bindValue(':ci', $ci, PDO::PARAM_STR);
