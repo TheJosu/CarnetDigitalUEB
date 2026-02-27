@@ -7,11 +7,11 @@ services:
     autoDeploy: true
     envVars:
       - key: PGSQL_HOST
-        value: "dpg-d2jl52a4d50c7386ben0-a.oregon-postgres.render.com"
+        value: "dpg-d6gfcmua2pns73ft293g-a.oregon-postgres.render.com"
       - key: PGSQL_DB
-        value: "alumnosueb_9r34"
+        value: "alumnosueb_t1qc"
       - key: PGSQL_USER
         value: "root"
       - key: PGSQL_PASSWORD
-        value: "mmxDA4jxOCxG53IhsdhFVxAtYzcNofwj"
+        value: "OzKHrB6Ovi0o9YljuP2V7rzAmtizby7p"
  
